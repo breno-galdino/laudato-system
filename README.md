@@ -14,7 +14,7 @@ O Sistema Paroquial Integrado foi idealizado para servir como uma ferramenta dig
 - **Backend**: FastAPI + SQLAlchemy / SQLModel  
 - **Banco de Dados**: PostgreSQL ou SQL Server  
 - **Autenticação**: JWT com permissões por papel (admin, coordenador, fiel, visitante)  
-- **Integrações Futuras**: WhatsApp API, sistemas de pagamento (Pix, Iugu, PagSeguro)
+- **Integrações Futuras**: WhatsApp API, sistemas de pagamento (Pix, PagSeguro)
 
 ---
 
