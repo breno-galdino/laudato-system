@@ -5,5 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic>=1.16.1",
     "fastapi[standard]>=0.115.12",
+    "psycopg2>=2.9.10",
+    "pydantic-settings>=2.9.1",
+    "sqlmodel>=0.0.24",
+    "taskipy>=1.14.1",
 ]
+
+[tool.taskipy.tasks]
+run = "fastapi dev"
+migrate = "alembic upgrade head"
+makemigrations = "alembic revision --autogenerate -m"
+
