@@ -20,7 +20,7 @@
 
             <v-form @submit.prevent="register" class="w-75">
               <v-text-field
-                v-model="name"
+                v-model="newUser.name"
                 label="Nome"
                 prepend-inner-icon="mdi-account"
                 variant="solo-filled"
@@ -28,7 +28,7 @@
                 class="mb-3"
               />
               <v-text-field
-                v-model="email"
+                v-model="newUser.email"
                 label="Email"
                 prepend-inner-icon="mdi-email"
                 variant="solo-filled"
@@ -36,7 +36,7 @@
                 class="mb-3"
               />
               <v-text-field
-                v-model="password"
+                v-model="newUser.password"
                 label="Senha"
                 type="password"
                 prepend-inner-icon="mdi-lock"
@@ -62,12 +62,14 @@
 <script setup>
 import { ref } from "vue";
 
-const name = ref("");
-const email = ref("");
-const password = ref("");
+const newUser = ref({
+  name:"",
+  email:"",
+  password:""
+})
 
 const register = () => {
-  alert(`Nome: ${name.value}\nEmail: ${email.value}\nSenha: ${password.value}`);
+  const {data} = useApi("/login",{body:newUser.value})
 };
 
 const goToLogin = () => {
