@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['d-naive'],
+  modules: [
+    "d-naive",
+    "@nuxt/icon",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+      },
+    ],
+  ],
+
   ssr: false,
 
   css: ["vuetify/lib/styles/main.sass"],

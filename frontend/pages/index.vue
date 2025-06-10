@@ -1,9 +1,8 @@
 <template>
-    <div>
-        <v-btn @click="refresh">Refresh</v-btn>
-        {{ status }}{{ data ?? "WAITANDO" }}
-    </div>
+  <div>
+    <v-card height="200">
+      <v-btn to="/login">login</v-btn>
+      
+  </v-card>
+  </div>
 </template>
-<script setup>
-    const { data, status, error, refresh } = await useApi('/', {cache: 'no-cache'})
-</script>
