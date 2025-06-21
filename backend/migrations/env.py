@@ -3,6 +3,8 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from app.models.users import User
+from app.models.warning import Warning
+from app.models.category import Category
 from sqlmodel import SQLModel
 from app.core.config import settings
 
