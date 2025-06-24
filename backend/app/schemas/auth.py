@@ -14,6 +14,7 @@ class UserCreate(User):
 
 class UserResponse(User):
     id: int
+    full_name: Optional[str] = None
     email: EmailStr
     username: str
 
@@ -22,5 +23,8 @@ class UserResponse(User):
 
 class Token(BaseModel):
     access_token: str
-    refresh_token: str
-    token_type: str = "bearer"
+    token_type: str
+    
+class TokenData(BaseModel):
+    username: str | None = None
+    scopes: list[str] = []
