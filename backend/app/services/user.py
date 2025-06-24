@@ -1,4 +1,3 @@
-
 from fastapi import Depends, HTTPException, HTTPException, Security, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from pydantic import ValidationError
@@ -6,19 +5,30 @@ from typing import Annotated
 from jose import JWTError
 
 from sqlmodel import Session, select
-from app.database import get_session
-from app.models.users import User
+from app.database import get_session, engine
+from app.models.users import User, Scope
 from app.core.security import verify_password
 from app.services.auth import decode_token
 from app.schemas.auth import TokenData
 
+
+def load_scopes_from_db() -> dict:
+    with Session(engine) as session:
+        scopes = session.exec(select(Scope)).all()
+        return {s.name: s.description for s in scopes}
+
+
+scopes = load_scopes_from_db()
+
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="auth/token",
-    scopes={"me": "Read information about the current user.", "items": "Read items."},
+    scopes=scopes,
 )
+
 
 def get_user(session: Session, email: str):
     return session.exec(select(User).where(User.email == email)).first()
+
 
 def authenticate_user(session: Session, email: str, password: str) -> User:
     user = get_user(session, email)
@@ -26,8 +36,11 @@ def authenticate_user(session: Session, email: str, password: str) -> User:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     return user
 
+
 async def get_current_user(
-    security_scopes: SecurityScopes, token: Annotated[str, Depends(oauth2_scheme)], session: Session = Depends(get_session)
+    security_scopes: SecurityScopes,
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: Session = Depends(get_session),
 ):
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
