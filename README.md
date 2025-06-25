@@ -10,9 +10,9 @@ O Sistema Paroquial Integrado foi idealizado para servir como uma ferramenta dig
 
 ## 🔧 Tecnologias Planejadas
 
-- **Frontend**: Nuxt 3 / Vue 3 + TypeScript  
+- **Frontend**: Nuxt 3 / Vue 3 + JavaScript  
 - **Backend**: FastAPI + SQLAlchemy / SQLModel  
-- **Banco de Dados**: PostgreSQL ou SQL Server  
+- **Banco de Dados**: PostgreSQL  
 - **Autenticação**: JWT com permissões por papel (admin, coordenador, fiel, visitante)  
 - **Integrações Futuras**: WhatsApp API, sistemas de pagamento (Pix, PagSeguro)
 
