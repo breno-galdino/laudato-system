@@ -8,7 +8,7 @@ from app.schemas.auth import Token, UserCreate, UserResponse
 from app.models.users import User, UserScope, Scope
 from app.database import get_session
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 def get_user_scopes(session: Session, user_id: int) -> list[str]:
     result = session.exec(

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from pydantic_settings import SettingsConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -17,9 +18,10 @@ class UserResponse(User):
     full_name: Optional[str] = None
     email: EmailStr
     username: str
-
-    class Config:
+    
+    model_config = SettingsConfigDict(
         from_attributes = True
+    )
 
 class Token(BaseModel):
     access_token: str
