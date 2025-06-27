@@ -3,25 +3,24 @@ from pydantic_settings import SettingsConfigDict
 from typing import Optional
 from datetime import datetime
 
-class User(BaseModel):
+class UserBase(BaseModel):
+    full_name: Optional[str] = None
     is_active: Optional[bool] = True
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
 
-class UserCreate(User):
+class UserCreate(UserBase):
     email: EmailStr
     password: str
     username: str
 
-class UserResponse(User):
+class UserResponse(UserBase):
     id: int
-    full_name: Optional[str] = None
     email: EmailStr
     username: str
-    
-    model_config = SettingsConfigDict(
-        from_attributes = True
-    )
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = SettingsConfigDict(from_attributes=True)
+
 
 class Token(BaseModel):
     access_token: str
