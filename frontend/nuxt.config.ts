@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    "d-naive",
+    "@nuxtjs/tailwindcss",
     "@nuxt/icon",
     [
       "@pinia/nuxt",
@@ -12,12 +12,6 @@ export default defineNuxtConfig({
   ],
 
   ssr: false,
-
-  css: ["vuetify/lib/styles/main.sass"],
-
-  build: {
-    transpile: ["vuetify"],
-  },
 
   runtimeConfig: {
     public: {
