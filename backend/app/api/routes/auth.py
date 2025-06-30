@@ -34,7 +34,6 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def register(user: UserCreate, session: Session = Depends(get_session)):
     existing = session.exec(select(User).where(User.email == user.email)).first()
     scope_id = session.exec(select(Scope.id).where(Scope.name == "me")).first()
-    print(f"Scope ID for 'me': {scope_id}")
     if existing:
         raise HTTPException(status_code=400, detail="Email já registrado")
     data = user.model_dump()

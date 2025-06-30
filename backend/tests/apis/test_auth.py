@@ -44,34 +44,34 @@ def test_register_existing_user(client):
     assert response.json() == {"detail": "Email já registrado"}
 
 
-# def test_login_for_access_token():
-#     client.post(
-#         "/auth/register",
-#         json={"email": "test_login@example.com", "password": "password", "username": "testuser_login", "full_name": "Test User Login"},
-#     )
-#     response = client.post(
-#         "/auth/token",
-#         data={"username": "testuser_login", "password": "password"},
-#     )
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert "access_token" in data
-#     assert data["token_type"] == "bearer"
+def test_login_for_access_token(client):
+    client.post(
+        "/auth/register",
+        json={"email": "test_login@example.com", "password": "password", "username": "testuser_login", "full_name": "Test User Login"},
+    )
+    response = client.post(
+        "/auth/token",
+        data={"username": "test_login@example.com", "password": "password"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
 
-# def test_read_users_me():
-#     client.post(
-#         "/auth/register",
-#         json={"email": "test_me@example.com", "password": "password", "username": "testuser_me", "full_name": "Test User Me"},
-#     )
-#     response = client.post(
-#         "/auth/token",
-#         data={"username": "testuser_me", "password": "password"},
-#     )
-#     token = response.json()["access_token"]
-#     response = client.get(
-#         "/auth/me", headers={"Authorization": f"Bearer {token}"}
-#     )
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert data["email"] == "test_me@example.com"
-#     assert data["username"] == "testuser_me"
+def test_read_users_me(client):
+    client.post(
+        "/auth/register",
+        json={"email": "test_me@example.com", "password": "password", "username": "testuser_me", "full_name": "Test User Me"},
+    )
+    response = client.post(
+        "/auth/token",
+        data={"username": "test_me@example.com", "password": "password"},
+    )
+    token = response.json()["access_token"]
+    response = client.get(
+        "/auth/me", headers={"Authorization": f"Bearer {token}"}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "test_me@example.com"
+    assert data["username"] == "testuser_me"
