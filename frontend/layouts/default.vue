@@ -10,11 +10,11 @@
           <NuxtLink to="/devotional" class="text-gray-600 hover:text-blue-600">Devocional</NuxtLink>
           <NuxtLink to="/contact" class="text-gray-600 hover:text-blue-600">Contato</NuxtLink>
         </nav>
-        <div class="flex items-center space-x-4">
-          <button @click="toggleTheme" class="px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600">
+        <div class="flex items-center space-x-4 ml-8">
+          <NuxtLink to="/login" class="bg-blue-600 text-white px-10 py-2 rounded-lg hover:bg-blue-700">Entrar</NuxtLink>
+          <!-- <button @click="toggleTheme" class="px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600">
             <Icon name="mdi:theme-light-dark" class="text-2xl" />
-          </button>
-          <NuxtLink to="/login" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Entrar</NuxtLink>
+          </button> -->
         </div>
       </div>
     </header>
@@ -23,7 +23,7 @@
     </main>
     <footer class="bg-gray-800 text-white py-8">
       <div class="container mx-auto px-6 text-center">
-        <p>&copy; 2024 Laudato System. Todos os direitos reservados.</p>
+        <p>&copy; 2025 Laudato System. Todos os direitos reservados.</p>
         <div class="flex justify-center space-x-6 mt-4">
           <a href="#" class="hover:text-blue-400"><Icon name="mdi:facebook" class="text-2xl" /></a>
           <a href="#" class="hover:text-blue-400"><Icon name="mdi:twitter" class="text-2xl" /></a>
