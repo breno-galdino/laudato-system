@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
-from app.core.security import hash_password, create_access_token
-from app.services.user import authenticate_user, get_current_active_user
-from app.schemas.auth import Token, UserCreate, UserResponse
-from app.models.users import User, UserScope, Scope
-from app.database import get_session
+from ...core.security import hash_password, create_access_token
+from ...services.user import authenticate_user, get_current_active_user
+from ...schemas.auth import Token, UserCreate, UserResponse
+from ...models.users import User, UserScope, Scope
+from ...database import get_session
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 def get_user_scopes(session: Session, user_id: int) -> list[str]:
     result = session.exec(
@@ -33,14 +33,19 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 @router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, session: Session = Depends(get_session)):
     existing = session.exec(select(User).where(User.email == user.email)).first()
+    scope_id = session.exec(select(Scope.id).where(Scope.name == "me")).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email já registrado")
     data = user.model_dump()
     data["password_hash"] = hash_password(data.pop("password"))
+    
     db_user = User(**data)
-    user_scope = UserScope(user_id=db_user.id, scope_name="me")
     session.add(db_user)
+    session.flush()
+
+    user_scope = UserScope(user_id=db_user.id, scope_id=scope_id)
     session.add(user_scope)
+    
     session.commit()
     session.refresh(db_user)
     return db_user

@@ -5,7 +5,7 @@ from ...database import get_session
 from ...models.category import Category as CategoryModel
 from ...schemas.category import CategoryCreate, CategoryRead, CategoryUpdate
 
-router = APIRouter(prefix="/categories", tags=["categories"])
+router = APIRouter(prefix="/category", tags=["category"])
 
 @router.get("/", response_model=list[CategoryRead])
 def get_categories(session: Session = Depends(get_session)):

@@ -5,11 +5,11 @@ from typing import Annotated
 from jose import JWTError
 
 from sqlmodel import Session, select
-from app.database import get_session, engine
-from app.models.users import User, Scope
-from app.core.security import verify_password
-from app.services.auth import decode_token
-from app.schemas.auth import TokenData
+from ..database import get_session, engine
+from ..models.users import User, Scope
+from ..core.security import verify_password
+from ..services.auth import decode_token
+from ..schemas.auth import TokenData
 
 
 def load_scopes_from_db() -> dict:

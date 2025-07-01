@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from jose import jwt, JWTError
 from typing import Dict, Any
 
-from app.core.config import settings
+from ..core.config import settings
 
 def decode_token(token: str) -> Dict[str, Any]:
     try:
