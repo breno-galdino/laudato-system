@@ -1,12 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxt/icon",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+      },
+    ],
+  ],
+
   ssr: false,
-
-  css: ["vuetify/lib/styles/main.sass"],
-
-  build: {
-    transpile: ["vuetify"],
-  },
 
   runtimeConfig: {
     public: {
