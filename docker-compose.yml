@@ -45,3 +45,25 @@ services:
           target: /app
           ignore:
             - node_modules/
+  
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    restart: always
+    ports:
+    - "6379:6379"
+    # environment:
+    #   REDIS_PASSWORD: secret
+
+  redis-insight:
+    container_name: redis-insight
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+    - "5540:5540"
+    volumes:
+    - redis-insight:/data
+
+volumes:
+  redis-insight:  
