@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.4",
-    "d-naive": "^1.8.5",
     "naive-ui": "^2.41.0",
     "nuxt": "^3.17.4",
     "pinia": "^2.2.2",

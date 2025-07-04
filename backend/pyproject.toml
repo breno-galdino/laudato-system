@@ -7,11 +7,19 @@ requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.16.1",
     "fastapi[standard]>=0.115.12",
+    "httpx>=0.28.1",
+    "jwt>=1.4.0",
+    "passlib[bcrypt]>=1.7.4",
     "psycopg2>=2.9.10",
     "pydantic-settings>=2.9.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "python-jose>=3.5.0",
     "sqlmodel>=0.0.24",
     "taskipy>=1.14.1",
 ]
+
+[tool.taskipy]
 
 [tool.taskipy.tasks]
 run = "fastapi dev"
