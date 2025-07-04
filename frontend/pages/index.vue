@@ -1,8 +1,4 @@
 <template>
-    <v-card height="100vh">
-        <n-color-picker />
-    </v-card>
+  <HomePage />
 </template>
-<script setup>
-    const { data, status, error, refresh } = await useApi('/', { cache: 'no-cache' })
-</script>
+
