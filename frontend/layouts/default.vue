@@ -4,7 +4,7 @@
     <header class="bg-white shadow-sm">
       <div class="container mx-auto px-6 py-4 flex justify-between items-center">
         <NuxtLink to="/" class="text-2xl font-bold text-gray-800">Laudato System</NuxtLink>
-        <nav class="hidden md:flex space-x-8">
+        <nav class="hidden md:flex space-x-8 gap-8">
           <NuxtLink to="/" class="text-gray-600 hover:text-blue-600">Início</NuxtLink>
           <NuxtLink to="/community" class="text-gray-600 hover:text-blue-600">Comunidade</NuxtLink>
           <NuxtLink to="/devotional" class="text-gray-600 hover:text-blue-600">Devocional</NuxtLink>
@@ -12,9 +12,6 @@
         </nav>
         <div class="flex items-center space-x-4 ml-8">
           <NuxtLink to="/login" class="bg-blue-600 text-white px-10 py-2 rounded-lg hover:bg-blue-700">Entrar</NuxtLink>
-          <!-- <button @click="toggleTheme" class="px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600">
-            <Icon name="mdi:theme-light-dark" class="text-2xl" />
-          </button> -->
         </div>
       </div>
     </header>
