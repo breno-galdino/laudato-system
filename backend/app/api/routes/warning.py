@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Security, Depends, status
+from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session, select
 import json
 
@@ -21,7 +22,10 @@ async def get_warnings(session: Session = Depends(get_session)):
         return json.loads(cached_data)
     
     warnings = session.exec(select(WarningModel)).all()
-    redis_client.setex(_cached_key, 600, json.dumps([w.model_dump() for w in warnings]))
+    
+    serialized = jsonable_encoder(warnings)
+
+    redis_client.setex(_cached_key, 600, json.dumps(serialized))
     
     return warnings
 
@@ -33,7 +37,7 @@ async def create_warning(
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
         
-    db_warning = WarningModel(**warning.dict())
+    db_warning = WarningModel(**warning.model_dump())
     session.add(db_warning)
     session.commit()
     session.refresh(db_warning)
