@@ -17,6 +17,7 @@ dependencies = [
     "python-jose>=3.5.0",
     "sqlmodel>=0.0.24",
     "taskipy>=1.14.1",
+    "redis>=5.0.8",
 ]
 
 [tool.taskipy]
