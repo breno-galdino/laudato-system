@@ -1,9 +1,10 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime, timezone
+from uuid import uuid4, UUID
 
 class UserScope(SQLModel, table=True):
-    user_id: int = Field(foreign_key="user.id", primary_key=True)
+    user_id: UUID = Field(foreign_key="user.id", primary_key=True)
     scope_id: int = Field(foreign_key="scope.id", primary_key=True)
 
 class Scope(SQLModel, table=True):
@@ -14,7 +15,7 @@ class Scope(SQLModel, table=True):
     users: List["User"] = Relationship(back_populates="scopes", link_model=UserScope)
 
 class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
     full_name: Optional[str] = Field(default=None, max_length=100)
     email: str = Field(max_length=150, unique=True)
     username: str = Field(max_length=50, unique=True)
