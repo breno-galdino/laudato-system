@@ -2,31 +2,21 @@
   <v-app>
     <v-main>
       <div class="background-wrapper">
-        <div class="auth-wrapper d-flex">
+        <div class="auth-wrapper d-flex text-center">
           <!-- Lado Esquerdo -->
-          <div class="welcome-side d-flex flex-column align-center justify-center text-center">
-            <h2 class="text-white text-h4 font-weight-bold">Bem Vindo!</h2>
+            <div class="welcome-side flex flex-col items-center justify-center text-center h-full">
+            <h2 class="text-white text-3xl font-bold">Bem Vindo!</h2>
             <p class="text-white mt-2">
               Para se manter conectado conosco<br />
-              por favor logue com suas informações pessoais.
+              por favor acesse sua conta.
             </p>
-          </div>
+            </div>
 
           <!-- Lado Direito -->
-          <div class="register-side d-flex flex-column align-center justify-center text-center">
-            <h2 class="text-primary text-h5 font-weight-bold mb-4">Criar conta</h2>
-
-        
+          <div class="register-side flex flex-col items-center justify-center text-center">
+            <img src="/logo.png" alt="Logotipo" class="mb-4 w-32 h-24">
 
             <v-form @submit.prevent="register" class="w-75">
-              <v-text-field
-                v-model="newUser.name"
-                label="Nome"
-                prepend-inner-icon="mdi-account"
-                variant="solo-filled"
-                hide-details
-                class="mb-3"
-              />
               <v-text-field
                 v-model="newUser.email"
                 label="Email"
@@ -45,12 +35,15 @@
                 class="mb-3"
               />
               <v-btn type="submit" color="primary" class="text-white mt-2" block>
-                REGISTRE-SE
+                ENTRAR
               </v-btn>
 
-              <v-btn variant="text" class="mt-4" @click="goToLogin">
-                Já tenho uma conta
-              </v-btn>
+                  <div class="mt-4 text-center">
+                  <span class="text-gray-600">Não tem uma conta?</span>
+                  <a href="/register" class="ml-1 text-primary font-semibold hover:underline">
+                    Registre-se
+                  </a>
+                  </div>
             </v-form>
           </div>
         </div>
@@ -60,8 +53,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 const newUser = ref({
   name:"",
   email:"",
@@ -70,10 +61,6 @@ const newUser = ref({
 
 const register = () => {
   const {data} = useApi("/login",{body:newUser.value})
-};
-
-const goToLogin = () => {
-  alert("Ir para login...");
 };
 </script>
 

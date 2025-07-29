@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
@@ -13,11 +14,21 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  css: ["~/assets/css/main.css"],
+
+  // build: {
+  //   transpile: ["vuetify"],
+  // },
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
   runtimeConfig: {
     public: {
       apiUrl: process.env.API_URL,
     },
   },
-  
-  compatibilityDate: '2025-05-15'
-})
+
+  compatibilityDate: "2025-05-15",
+});
