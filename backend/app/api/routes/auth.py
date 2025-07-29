@@ -33,7 +33,6 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 @router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, session: Session = Depends(get_session)):
     existing = session.exec(select(User).where(User.email == user.email)).first()
-    scope_id = session.exec(select(Scope.id).where(Scope.name == "me")).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email já registrado")
     data = user.model_dump()
@@ -43,6 +42,7 @@ async def register(user: UserCreate, session: Session = Depends(get_session)):
     session.add(db_user)
     session.flush()
 
+    scope_id = session.exec(select(Scope.id).where(Scope.name == "me")).first()
     user_scope = UserScope(user_id=db_user.id, scope_id=scope_id)
     session.add(user_scope)
     
