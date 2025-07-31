@@ -14,7 +14,7 @@ export const useAuthStore = defineStore("auth", {
 
       this.loading = true;
       try {
-        const { data } = await asyncUseApi("/auth/token", {
+        const { data } = await asyncUseApi("/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -36,9 +36,9 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchUser() {
       try {
-        const { data } = await asyncUseApi("/auth/me", {
-          credentials: "include",
-        });
+        const { data } = await asyncUseApi("/auth/profile");
+
+        console.log(data.value);
         this.user = data.value || null;
       } catch (err) {
         console.error("Erro ao buscar usuário:", err);

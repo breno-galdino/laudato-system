@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from ...core.security import hash_password, create_access_token
+from ...core.config import settings
 from ...services.user import authenticate_user, get_current_active_user
 from ...schemas.auth import Token, UserCreate, UserResponse
 from ...models.users import User, UserScope, Scope
@@ -19,8 +20,8 @@ def get_user_scopes(session: Session, user_id: int) -> list[str]:
     return result
 
 
-@router.post("/token")
-async def token(
+@router.post("/login")
+async def login(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
@@ -36,9 +37,8 @@ async def token(
         }
     )
     
-    response = JSONResponse(content={"message": "Login successful"})
     response.set_cookie(
-        key="access_token",
+        key=settings.TOKEN_NAME,
         value=access_token,
         httponly=True,
         secure=False,
@@ -47,10 +47,10 @@ async def token(
         path="/",
     )
 
-    return response
+    return {"message": f"Welcome, {user.username}! You are now logged in."}
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/profile", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 

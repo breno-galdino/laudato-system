@@ -1,14 +1,15 @@
-from fastapi import Depends, HTTPException, HTTPException, Security, status
+from fastapi import Depends, HTTPException, HTTPException, Security, status, Request
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from pydantic import ValidationError
 from typing import Annotated
 from jose import JWTError
-
 from sqlmodel import Session, select
+
 from ..database import get_session, engine
-from ..models.users import User, Scope
 from ..core.security import verify_password
+from ..core.config import settings
 from ..services.auth import decode_token
+from ..models.users import User, Scope
 from ..schemas.auth import TokenData
 
 
@@ -19,12 +20,6 @@ def load_scopes_from_db() -> dict:
 
 
 scopes = load_scopes_from_db()
-
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="auth/token",
-    scopes=scopes,
-)
-
 
 def get_user(session: Session, email: str):
     return session.exec(select(User).where(User.email == email)).first()
@@ -39,20 +34,16 @@ def authenticate_user(session: Session, email: str, password: str) -> User:
 
 async def get_current_user(
     security_scopes: SecurityScopes,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    request: Request,
     session: Session = Depends(get_session),
 ):
-    if security_scopes.scopes:
-        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
-    else:
-        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": authenticate_value},
+        headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = decode_token(token)
+        payload = decode_token(request, settings.TOKEN_NAME)
         email = payload.get("email")
         username = payload.get("username")
         if email is None:
@@ -69,7 +60,7 @@ async def get_current_user(
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
+                headers={"WWW-Authenticate": "Bearer"},
             )
     return user
 

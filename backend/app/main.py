@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
+
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 
 from .api.routes import auth, category, warning
 
