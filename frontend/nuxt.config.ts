@@ -1,6 +1,11 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    baseURL: "/laudatosi",
+  },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxt/icon",
@@ -16,9 +21,9 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
-  // build: {
-  //   transpile: ["vuetify"],
-  // },
+  build: {
+    transpile: ["vuetify"],
+  },
 
   vite: {
     plugins: [tailwindcss()],

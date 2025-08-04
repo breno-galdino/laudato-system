@@ -18,7 +18,7 @@ async def get_warnings(session: Session = Depends(get_session)):
     cached_data = redis_client.get(_cached_key)
     
     if cached_data:
-        print("Cached Data - Redis")
+        print("Cached Data Warning - Redis")
         return json.loads(cached_data)
     
     warnings = session.exec(select(WarningModel)).all()
