@@ -4,9 +4,17 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
     loading: false,
+    isAuthenticated: false
   }),
 
   actions: {
+    async checkLogin() {
+      try {
+        await this.fetchUser();
+      } catch (err) {
+        console.error("Erro ao verificar login:", err);
+      } 
+    },
     async login(username, password) {
       const formData = new URLSearchParams();
       formData.append("username", username);
@@ -20,12 +28,9 @@ export const useAuthStore = defineStore("auth", {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: formData,
-          credentials: "include",
         });
         await this.fetchUser();
 
-        const router = useRouter();
-        router.push("/");
       } catch (err) {
         console.error("Erro ao fazer login:", err);
         throw err;
@@ -36,10 +41,13 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchUser() {
       try {
-        const { data } = await asyncUseApi("/auth/profile");
-
-        console.log(data.value);
+        const { data } = await asyncUseApi("/auth/profile", {
+          onResponse({ request, response, options }) {
+            // Handle response if needed
+          },
+        });
         this.user = data.value || null;
+        this.isAuthenticated = !!this.user;
       } catch (err) {
         console.error("Erro ao buscar usuário:", err);
         this.user = null;
@@ -48,10 +56,7 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        await $fetch("/auth/logout", {
-          method: "POST",
-          credentials: "include",
-        });
+        await asyncUseApi("/auth/logout");
       } catch (err) {
         console.error("Erro ao fazer logout:", err);
       }

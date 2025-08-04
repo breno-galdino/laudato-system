@@ -4,9 +4,11 @@ from pydantic import ValidationError
 from typing import Annotated
 from jose import JWTError
 from sqlmodel import Session, select
+import json
 
 from ..database import get_session, engine
 from ..core.security import verify_password
+from ..core.redis import redis_client
 from ..core.config import settings
 from ..services.auth import decode_token
 from ..models.users import User, Scope
@@ -20,6 +22,7 @@ def load_scopes_from_db() -> dict:
 
 
 scopes = load_scopes_from_db()
+
 
 def get_user(session: Session, email: str):
     return session.exec(select(User).where(User.email == email)).first()
@@ -37,6 +40,12 @@ async def get_current_user(
     request: Request,
     session: Session = Depends(get_session),
 ):
+    cached_data = redis_client.get(settings.TOKEN_NAME)
+    if cached_data:
+        print("Cached Data User - Redis")
+        user_data = json.loads(cached_data)
+        return User.model_validate(user_data)
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -62,6 +71,11 @@ async def get_current_user(
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+
+    redis_client.setex(
+        settings.TOKEN_NAME, 3600, json.dumps(user.model_dump(), default=str)
+    )
+
     return user
 
 

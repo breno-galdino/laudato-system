@@ -43,12 +43,20 @@ async def login(
         httponly=True,
         secure=False,
         samesite="Lax",
-        max_age=60 * 60 * 24,
+        max_age=60 * 60,
         path="/",
     )
 
     return {"message": f"Welcome, {user.username}! You are now logged in."}
 
+@router.get("/logout")
+def logout(response: Response, user: str = Depends(get_current_active_user)):
+    if not user:
+        return {"message": "You're not logged in"}
+    
+    response.delete_cookie(key=settings.TOKEN_NAME, path="/")
+    
+    return {"message": "You have been logged out successfully"}
 
 @router.get("/profile", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):

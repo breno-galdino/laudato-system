@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <div class="relative">
+    <div class="relative" v-if="!authStore.user">
       <div class="bg-cover bg-center h-[500px]" style="background-image: url('/diocese.png');">
         <div class="bg-gradient-to-r from-[#2C3E50] to-[#000] bg-opacity-70 h-full flex items-center justify-center">
           <div class="text-center text-white p-8 rounded-lg shadow-xl">
@@ -9,20 +9,16 @@
             <p class="text-xl mb-8 opacity-90">Uma solução unificada para administração simplificada e engajamento
               comunitário vibrante.</p>
             <div>
-                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-                <a
-                  href="#features"
-                  class="w-60 h-12 flex items-center justify-center rounded-full font-bold bg-white text-[#2C3E50] border border-[#3498DB] shadow transition-all duration-200 hover:scale-105 hover:bg-[#CCC] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
-                >
+              <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <a href="#features"
+                  class="w-60 h-12 flex items-center justify-center rounded-full font-bold bg-white text-[#2C3E50] border border-[#3498DB] shadow transition-all duration-200 hover:scale-105 hover:bg-[#CCC] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]">
                   Saiba Mais
                 </a>
-                <a
-                  href="/login"
-                  class="w-60 h-12 flex items-center justify-center rounded-full font-bold bg-[#3498DB] text-white shadow transition-all duration-200 hover:bg-[#217dbb] hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
-                >
+                <a href="/login"
+                  class="w-60 h-12 flex items-center justify-center rounded-full font-bold bg-[#3498DB] text-white shadow transition-all duration-200 hover:bg-[#217dbb] hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#3498DB]">
                   Acessar Sistema
                 </a>
-                </div>
+              </div>
 
 
             </div>
@@ -225,8 +221,8 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
-
+  import { useAuthStore } from '../stores/useAuthStore';
+  const authStore = useAuthStore();
   const modules = ref([
     {
       title: 'Agendamento de Missas e Liturgia',
@@ -265,11 +261,6 @@
       path: '/community'
     },
     {
-      title: 'Registro de Sacramentos',
-      description: 'Acompanhe o histórico sacramental individual e emita certificados (batismo, confirmação, casamento).',
-      icon: 'mdi:book-open-page-variant',
-    },
-    {
       title: 'Gestão de Pastorais e Movimentos',
       description: 'Cadastre grupos pastorais, agende reuniões e gerencie participantes.',
       icon: 'mdi:human-handsup',
@@ -281,6 +272,9 @@
       path: '/devotional'
     },
   ]);
+
+  const { data: warnings } = useApi('/warnings')
+
 </script>
 
 <style>

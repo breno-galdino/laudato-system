@@ -21,7 +21,7 @@
                 variant="solo-filled" hide-details class="mb-3" />
               <v-text-field v-model="credentialUser.password" label="Senha" type="password"
                 prepend-inner-icon="mdi-lock" variant="solo-filled" hide-details class="mb-3" />
-              <v-btn type="submit" color="primary" class="text-white mt-2" block>
+              <v-btn type="submit" color="primary" class="text-white mt-2" :loading="loading" block>
                 ENTRAR
               </v-btn>
 
@@ -48,8 +48,20 @@
     password: ""
   })
 
+  const loading = ref(false);
+
+  const router = useRouter();
+
   const login = async () => {
+    loading.value = true;
+    try {
       await authStore.login(credentialUser.value.username, credentialUser.value.password);
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
+      loading.value = false;
+    }
+    router.push('/profile');
   }
 
 </script>

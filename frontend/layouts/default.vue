@@ -8,10 +8,15 @@
           <NuxtLink to="/" class="text-gray-600 hover:text-blue-600">Início</NuxtLink>
           <NuxtLink to="/community" class="text-gray-600 hover:text-blue-600">Comunidade</NuxtLink>
           <NuxtLink to="/devotional" class="text-gray-600 hover:text-blue-600">Devocional</NuxtLink>
+          <NuxtLink to="/management" class="text-gray-600 hover:text-blue-600">Gestão</NuxtLink>
           <NuxtLink to="/contact" class="text-gray-600 hover:text-blue-600">Contato</NuxtLink>
         </nav>
         <div class="flex items-center space-x-4 ml-8">
-          <NuxtLink to="/login" class="bg-blue-600 text-white px-10 py-2 rounded-lg hover:bg-blue-700">Entrar</NuxtLink>
+          <NuxtLink v-if="!authStore.user" to="/login" class="bg-blue-600 text-white px-10 py-2 rounded-lg hover:bg-blue-700">Entrar</NuxtLink>
+          <NuxtLink v-else to="/profile" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600">
+            <span>{{ authStore.user.full_name.split(' ')[0] }}</span>
+            <Icon name="mdi:account-circle" class="text-2xl" />
+          </NuxtLink>
         </div>
       </div>
     </header>
@@ -33,7 +38,9 @@
 
 <script setup>
 import { useTheme } from 'vuetify'
+import { useAuthStore } from '@/stores/useAuthStore'
 
+const authStore = useAuthStore()
 const theme = useTheme()
 
 function toggleTheme () {
