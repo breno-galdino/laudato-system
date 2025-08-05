@@ -1,8 +1,7 @@
-
 <template>
-  <div class="text-center p-4">
-    <Icon name="mdi:candle" class="text-6xl text-yellow-500 animate-pulse" />
-    <p class="text-gray-600 mt-2">{{ candle.intention }}</p>
+  <div class="text-center pa-4">
+    <v-icon size="64" color="yellow-darken-2" class="animate-pulse">mdi-candle</v-icon>
+    <p class="text-body-1 mt-2">{{ candle.intention }}</p>
   </div>
 </template>
 

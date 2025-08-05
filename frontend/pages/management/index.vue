@@ -1,51 +1,59 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-12">Painel de Gerenciamento</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      
-      <NuxtLink to="/management/announcements" class="group block p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <div class="flex items-center mb-4">
-          <div class="p-3 bg-blue-500 rounded-full text-white mr-4">
-            <Icon name="mdi:bullhorn" class="text-2xl" />
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Anúncios</h2>
-        </div>
-        <p class="text-gray-600">Crie, edite e exclua anúncios da comunidade.</p>
-      </NuxtLink>
-
-      <NuxtLink to="/management/community" class="group block p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <div class="flex items-center mb-4">
-          <div class="p-3 bg-green-500 rounded-full text-white mr-4">
-            <Icon name="mdi:account-group" class="text-2xl" />
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Comunidade</h2>
-        </div>
-        <p class="text-gray-600">Gerencie os membros e as configurações da comunidade.</p>
-      </NuxtLink>
-
-      <NuxtLink to="/management/devotional" class="group block p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <div class="flex items-center mb-4">
-          <div class="p-3 bg-yellow-500 rounded-full text-white mr-4">
-            <Icon name="mdi:book-open-page-variant" class="text-2xl" />
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Devocional</h2>
-        </div>
-        <p class="text-gray-600">Administre o conteúdo devocional, como orações e velas.</p>
-      </NuxtLink>
-
-      <NuxtLink to="/management/users" class="group block p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <div class="flex items-center mb-4">
-          <div class="p-3 bg-red-500 rounded-full text-white mr-4">
-            <Icon name="mdi:account-cog" class="text-2xl" />
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Usuários</h2>
-        </div>
-        <p class="text-gray-600">Gerencie as contas e permissões dos usuários.</p>
-      </NuxtLink>
-
-    </div>
-  </div>
+  <v-container>
+    <n-h1 align="center" class="mb-12">Painel de Gerenciamento</n-h1>
+    <v-row>
+      <v-col v-for="item in managementItems" :key="item.title" cols="12" md="6">
+        <NuxtLink :to="item.to" class="text-decoration-none">
+          <v-card hover class="fill-height">
+            <v-card-text>
+              <div class="d-flex align-center">
+                <v-avatar :color="item.color" size="56" class="mr-4">
+                  <v-icon :icon="item.icon" color="white" size="large"></v-icon>
+                </v-avatar>
+                <div>
+                  <v-card-title class="pa-0 text-h5">{{ item.title }}</v-card-title>
+                  <v-card-subtitle>{{ item.description }}</v-card-subtitle>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </NuxtLink>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
+const managementItems = ref([
+  {
+    title: 'Anúncios',
+    description: 'Crie, edite e exclua anúncios da comunidade.',
+    icon: 'mdi:mdi-bullhorn',
+    to: '/management/announcements',
+    color: 'blue'
+  },
+  {
+    title: 'Comunidade',
+    description: 'Gerencie os membros e as configurações da comunidade.',
+    icon: 'mdi:mdi-account-group',
+    to: '/management/community',
+    color: 'green'
+  },
+  {
+    title: 'Devocional',
+    description: 'Administre o conteúdo devocional, como orações e velas.',
+    icon: 'mdi:mdi-book-open-page-variant',
+    to: '/management/devotional',
+    color: 'orange'
+  },
+  {
+    title: 'Usuários',
+    description: 'Gerencie as contas e permissões dos usuários.',
+    icon: 'mdi:mdi-account-cog',
+    to: '/management/users',
+    color: 'red'
+  }
+]);
 </script>

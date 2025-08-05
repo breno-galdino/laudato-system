@@ -1,13 +1,14 @@
-
 <template>
-  <div class="bg-white min-h-screen py-12">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Orações e Novenas em Áudio</h1>
-      <div class="space-y-6">
-        <PrayerAudioPlayer v-for="prayer in prayers" :key="prayer.id" :prayer="prayer" />
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <n-h1 align="center" class="mb-8">Orações e Novenas em Áudio</n-h1>
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8">
+        <n-space vertical size="large">
+          <PrayerAudioPlayer v-for="prayer in prayers" :key="prayer.id" :prayer="prayer" />
+        </n-space>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>

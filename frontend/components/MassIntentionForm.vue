@@ -1,19 +1,14 @@
-
 <template>
-  <div class="bg-gray-100 p-8 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">Enviar Intenção de Missa</h2>
-    <form @submit.prevent="submitIntention">
-      <div class="mb-4">
-        <label for="name" class="block text-gray-700 font-semibold mb-2">Seu Nome</label>
-        <input type="text" id="name" v-model="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
-      </div>
-      <div class="mb-4">
-        <label for="intention" class="block text-gray-700 font-semibold mb-2">Intenção</label>
-        <textarea id="intention" v-model="intention" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700">Enviar Intenção</button>
-    </form>
-  </div>
+  <v-card class="pa-4">
+    <v-card-title class="text-h5">Enviar Intenção de Missa</v-card-title>
+    <v-card-text>
+      <v-form @submit.prevent="submitIntention">
+        <v-text-field v-model="name" label="Seu Nome" required></v-text-field>
+        <v-textarea v-model="intention" label="Intenção" rows="4" required></v-textarea>
+        <v-btn type="submit" color="primary" block>Enviar Intenção</v-btn>
+      </v-form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>

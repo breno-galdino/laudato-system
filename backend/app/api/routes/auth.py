@@ -5,6 +5,7 @@ from sqlmodel import Session, select
 
 from ...core.security import hash_password, create_access_token
 from ...core.config import settings
+from ...core.redis import redis_client
 from ...services.user import authenticate_user, get_current_active_user
 from ...schemas.auth import Token, UserCreate, UserResponse
 from ...models.users import User, UserScope, Scope
@@ -46,6 +47,16 @@ async def login(
         max_age=60 * 60,
         path="/",
     )
+    
+    response.set_cookie(
+        key="user",
+        value=user.id,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+        max_age=60 * 60,
+        path="/",
+    )
 
     return {"message": f"Welcome, {user.username}! You are now logged in."}
 
@@ -55,6 +66,8 @@ def logout(response: Response, user: str = Depends(get_current_active_user)):
         return {"message": "You're not logged in"}
     
     response.delete_cookie(key=settings.TOKEN_NAME, path="/")
+    response.delete_cookie(key="user", path="/")
+    redis_client.delete(f"token:{user.id}")
     
     return {"message": "You have been logged out successfully"}
 

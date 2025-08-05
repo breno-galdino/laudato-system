@@ -40,11 +40,13 @@ async def get_current_user(
     request: Request,
     session: Session = Depends(get_session),
 ):
-    cached_data = redis_client.get(settings.TOKEN_NAME)
-    if cached_data:
-        print("Cached Data User - Redis")
-        user_data = json.loads(cached_data)
-        return User.model_validate(user_data)
+    cookie_user = request.cookies.get('user')
+    if cookie_user:
+        cached_data = redis_client.get(f"token:{cookie_user}")
+        if cached_data:
+            print("Cached Data User - Redis")
+            user_data = json.loads(cached_data)
+            return User.model_validate(user_data)
 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -73,7 +75,7 @@ async def get_current_user(
             )
 
     redis_client.setex(
-        settings.TOKEN_NAME, 3600, json.dumps(user.model_dump(), default=str)
+        f"token:{user.id}", 3600, json.dumps(user.model_dump(), default=str)
     )
 
     return user

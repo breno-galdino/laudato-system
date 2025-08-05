@@ -1,12 +1,14 @@
+
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Gerenciar Usuários</h1>
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Usuários do Sistema</h2>
-      <!-- Placeholder for user management -->
-      <p class="text-gray-600">Aqui você poderá gerenciar as contas e permissões dos usuários.</p>
-    </div>
-  </div>
+  <v-container>
+    <n-h1 align="center" class="mb-8">Gerenciar Usuários</n-h1>
+    <v-card>
+      <v-card-title class="text-h5">Usuários do Sistema</v-card-title>
+      <v-card-text>
+        <p>Aqui você poderá gerenciar as contas e permissões dos usuários.</p>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup>

@@ -1,12 +1,14 @@
+
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Gerenciar Devocional</h1>
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Conteúdo Devocional</h2>
-      <!-- Placeholder for devotional content management -->
-      <p class="text-gray-600">Aqui você poderá gerenciar o conteúdo devocional, como orações e velas.</p>
-    </div>
-  </div>
+  <v-container>
+    <n-h1 align="center" class="mb-8">Gerenciar Devocional</n-h1>
+    <v-card>
+      <v-card-title class="text-h5">Conteúdo Devocional</v-card-title>
+      <v-card-text>
+        <p>Aqui você poderá gerenciar o conteúdo devocional, como orações e velas.</p>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup>

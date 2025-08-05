@@ -1,26 +1,20 @@
-
 <template>
-  <div class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Anúncios da Comunidade</h1>
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <AnnouncementCard v-for="announcement in announcements" :key="announcement.id" :announcement="announcement" />
-      </div>
-      <div class="mt-12">
+  <v-container>
+    <n-h1 align="center" class="mb-8">Anúncios da Comunidade</n-h1>
+    <v-row>
+      <v-col v-for="announcement in announcements" :key="announcement.id" cols="12" md="6" lg="4">
+        <AnnouncementCard :announcement="announcement" />
+      </v-col>
+    </v-row>
+    <v-row justify="center" class="mt-12">
+      <v-col cols="12" md="8" lg="6">
         <MassMessageForm />
-      </div>
-      <div class="mt-12 text-center">
-        <SocialLinks />
-      </div>
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import AnnouncementCard from '~/components/AnnouncementCard.vue';
-import MassMessageForm from '~/components/MassMessageForm.vue';
-import SocialLinks from '~/components/SocialLinks.vue';
 
 const announcements = ref([
   {
