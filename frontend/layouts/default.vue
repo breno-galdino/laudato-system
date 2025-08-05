@@ -34,26 +34,81 @@
       <v-btn size="small" to="/devotional" class="text-none">Devocional</v-btn>
       <v-btn size="small" to="/management" class="text-none">Gestão</v-btn>
       <div v-if="!authStore.user" class="ml-4">
-        <v-btn to="/login" color="primary">Entrar</v-btn>
-        <v-btn to="/register" color="secondary">Cadastre-se</v-btn>
+        <v-btn size="small" to="/login" color="accent" class="text-none" rounded>Entrar</v-btn>
+        <v-btn size="small" to="/register" color="accent" class="text-none" rounded>Cadastre-se</v-btn>
       </div>
       <div v-else class="mr-4">
-        <v-btn class="text-none" to="/profile" prepend-icon="mdi-account-circle">{{authStore.user.username}}</v-btn>
+        <v-btn class="text-none" to="/profile" prepend-icon="mdi-account-circle">{{ authStore.user.username }}</v-btn>
       </div>
     </v-app-bar>
 
-    <v-main class="h-100">
+    <v-main>
       <slot />
     </v-main>
 
-    <v-footer class="d-flex flex-column ma-0 pa-0">
-      <div class="d-flex justify-center w-100 align-center px-4">
-        <v-btn v-for="icon in icons" :key="icon" class="mx-4" :icon="icon" variant="plain" size="small"></v-btn>
-      </div>
-      <div class="px-4 py-2 bg-black text-center w-100">
-        {{ new Date().getFullYear() }} — <strong>Laudato System</strong>
-      </div>
+    <v-footer class="bg-blue-grey-darken-4 text-white pt-10" padless>
+      <v-container>
+        <v-row class="px-2" justify="space-between" align="start">
+          <!-- Coluna 1: Informações da Paróquia -->
+          <v-col cols="12" md="4">
+            <h4 class="text-h6 font-weight-bold mb-2">Paróquia São João Batista</h4>
+            <p class="text-body-2">
+              Rua das Flores, 123<br>
+              Centro - Cidade/UF<br>
+              CEP: 00000-000
+            </p>
+            <p class="text-body-2 mt-2">
+              <v-icon start size="small">mdi-email</v-icon>
+              contato@paroquia.com.br
+            </p>
+            <p class="text-body-2">
+              <v-icon start size="small">mdi-phone</v-icon>
+              (11) 1234-5678
+            </p>
+          </v-col>
+
+          <!-- Coluna 2: Links úteis -->
+          <v-col cols="12" md="4">
+            <h4 class="text-h6 font-weight-bold mb-2">Links úteis</h4>
+            <v-list density="compact" nav class="bg-transparent">
+              <v-list-item to="/about" title="Sobre a Plataforma" prepend-icon="mdi-information-outline" />
+              <v-list-item to="/contact" title="Fale Conosco" prepend-icon="mdi-email-outline" />
+              <v-list-item to="/privacy" title="Política de Privacidade" prepend-icon="mdi-shield-lock-outline" />
+              <v-list-item to="/terms" title="Termos de Uso" prepend-icon="mdi-file-document-outline" />
+            </v-list>
+          </v-col>
+
+          <!-- Coluna 3: Redes sociais -->
+          <v-col cols="12" md="4">
+            <h4 class="text-h6 font-weight-bold mb-2">Siga-nos</h4>
+            <div class="d-flex ga-4">
+              <v-btn icon size="small" variant="text" color="white" href="https://facebook.com" target="_blank">
+                <v-icon size="24">mdi-facebook</v-icon>
+              </v-btn>
+              <v-btn icon size="small" variant="text" color="white" href="https://instagram.com" target="_blank">
+                <v-icon size="24">mdi-instagram</v-icon>
+              </v-btn>
+              <v-btn icon size="small" variant="text" color="white" href="https://youtube.com" target="_blank">
+                <v-icon size="24">mdi-youtube</v-icon>
+              </v-btn>
+              <v-btn icon size="small" variant="text" color="white" href="https://wa.me/5511999999999" target="_blank">
+                <v-icon size="24">mdi-whatsapp</v-icon>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-4" color="white" />
+
+        <!-- Copyright -->
+        <v-row justify="center" class="pb-2">
+          <v-col cols="12" class="text-center text-caption text-white">
+            © {{ new Date().getFullYear() }} Laudato System — Todos os direitos reservados.
+          </v-col>
+        </v-row>
+      </v-container>
     </v-footer>
+
   </v-app>
 </template>
 

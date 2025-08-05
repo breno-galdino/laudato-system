@@ -31,24 +31,23 @@
     </v-img>
 
     <!-- Important Notices Section -->
-    <v-container class="py-16">
-      <h2 class="text-h3 font-weight-bold text-center text-primary mb-12">Avisos Importantes</h2>
-      <v-card class="mx-auto pa-4" max-width="900" variant="tonal">
-        <v-card-item>
-          <v-card-title class="text-h5">Campanha do Agasalho 2025</v-card-title>
-        </v-card-item>
-        <v-card-text class="text-body-1">
-          Estamos arrecadando agasalhos e cobertores para ajudar as famílias necessitadas da nossa comunidade. As doações podem ser entregues na secretaria paroquial até o dia 30 de Julho.
-        </v-card-text>
-        <v-divider class="my-4"></v-divider>
-        <v-card-item>
-          <v-card-title class="text-h5">Inscrições para Catequese</v-card-title>
-        </v-card-item>
-        <v-card-text class="text-body-1">
-          As inscrições para a catequese de 2025 estão abertas! Procure a secretaria paroquial para mais informações e para realizar a inscrição de seus filhos.
-        </v-card-text>
-      </v-card>
-    </v-container>
+    <div class="bg-blue-grey-lighten-5 pb-16">
+      <v-container>
+        <h2 class="text-h3 font-weight-bold text-center text-grey-darken-3 mb-12">Avisos</h2>
+        <v-row justify="center">
+          <v-col v-for="(notice, i) in notices" :key="i" cols="12" md="5">
+            <v-card class="fill-height" elevation="2" rounded="lg">
+              <v-card-item :prepend-icon="notice.icon" :class="`bg-${notice.color}`">
+                <v-card-title class="text-white font-weight-bold">{{ notice.title }}</v-card-title>
+              </v-card-item>
+              <v-card-text class="pa-6 text-body-1">
+                {{ notice.text }}
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
 
     <v-divider :thickness="3"></v-divider>
 
@@ -57,70 +56,79 @@
       <h2 class="text-h3 font-weight-bold text-center text-primary mb-12">Calendário Paroquial</h2>
       <v-row justify="center" class="ga-8">
         <v-col cols="12" md="5">
-          <h3 class="text-h4 font-weight-medium text-center mb-8">Próximas Missas</h3>
-          <v-timeline side="end" align="start">
-            <v-timeline-item dot-color="primary" size="small">
-              <div class="d-flex">
-                <strong class="me-4">09:00</strong>
-                <div>
-                  <strong>Missa Dominical</strong>
-                  <div class="text-caption">Igreja Matriz</div>
-                  <div class="text-caption mb-2">Celebrante: Pe. João Silva</div>
-                </div>
-              </div>
-            </v-timeline-item>
-            <v-timeline-item dot-color="secondary" size="small">
-              <div class="d-flex">
-                <strong class="me-4">18:00</strong>
-                <div>
-                  <strong>Missa da Família</strong>
-                  <div class="text-caption">Capela São José</div>
-                  <div class="text-caption mb-2">Celebrante: Pe. Pedro Santos</div>
-                </div>
-              </div>
-            </v-timeline-item>
-            <v-timeline-item dot-color="primary" size="small">
-              <div class="d-flex">
-                <strong class="me-4">19:30</strong>
-                <div>
-                  <strong>Missa Semanal</strong>
-                  <div class="text-caption">Igreja Matriz</div>
-                  <div class="text-caption mb-2">Celebrante: Pe. Antônio Costa</div>
-                </div>
-              </div>
-            </v-timeline-item>
-          </v-timeline>
+          <v-card elevation="4" rounded="lg">
+            <v-card-item class="bg-primary">
+              <v-card-title class="text-center text-h4 font-weight-medium">Próximas Missas</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <v-timeline side="end" align="center" truncate-line="both" density="compact" class="py-6 px-2">
+                <v-timeline-item dot-color="primary" size="small" fill-dot>
+                  <v-card variant="tonal" color="primary" width="320px">
+                    <v-card-title class="text-subtitle-1">09:00 - Missa Dominical</v-card-title>
+                    <v-card-text class="text-caption">
+                      <div>Igreja Matriz</div>
+                      <div>Celebrante: Pe. João Silva</div>
+                    </v-card-text>
+                  </v-card>
+                </v-timeline-item>
+                <v-timeline-item dot-color="secondary" size="small" fill-dot>
+                   <v-card variant="tonal" color="secondary" width="320px">
+                    <v-card-title class="text-subtitle-1">18:00 - Missa da Família</v-card-title>
+                    <v-card-text class="text-caption">
+                      <div>Capela São José</div>
+                      <div>Celebrante: Pe. Pedro Santos</div>
+                    </v-card-text>
+                  </v-card>
+                </v-timeline-item>
+                <v-timeline-item dot-color="primary" size="small" fill-dot>
+                   <v-card variant="tonal" color="primary" width="320px">
+                    <v-card-title class="text-subtitle-1">19:30 - Missa Semanal</v-card-title>
+                    <v-card-text class="text-caption">
+                      <div>Igreja Matriz</div>
+                      <div>Celebrante: Pe. Antônio Costa</div>
+                    </v-card-text>
+                  </v-card>
+                </v-timeline-item>
+              </v-timeline>
+            </v-card-text>
+          </v-card>
         </v-col>
 
         <v-divider vertical inset class="hidden-sm-and-down"></v-divider>
 
         <v-col cols="12" md="5">
-          <h3 class="text-h4 font-weight-medium text-center mb-8">Eventos da Paróquia</h3>
-          <v-sheet elevation="2" rounded="lg">
-            <v-list lines="two" density="compact">
-              <v-list-item title="Festa Junina Paroquial" subtitle="20 de Julho de 2025 - Salão Paroquial"></v-list-item>
-              <v-divider></v-divider>
-              <v-list-item title="Retiro Espiritual Anual" subtitle="15 a 17 de Agosto de 2025 - Casa de Retiros Bom Pastor"></v-list-item>
-            </v-list>
-          </v-sheet>
+           <v-card elevation="4" rounded="lg">
+            <v-card-item class="bg-secondary">
+              <v-card-title class="text-center text-h4 font-weight-medium">Eventos da Paróquia</v-card-title>
+            </v-card-item>
+            <v-card-text class="pa-4">
+              <v-list lines="two" density="compact" class="bg-transparent">
+                <v-list-item prepend-icon="mdi-party-popper" title="Festa Junina Paroquial" subtitle="20 de Julho de 2025 - Salão Paroquial"></v-list-item>
+                <v-divider></v-divider>
+                <v-list-item prepend-icon="mdi-meditation" title="Retiro Espiritual Anual" subtitle="15 a 17 de Agosto de 2025 - Casa de Retiros Bom Pastor"></v-list-item>
+              </v-list>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
 
     <!-- Modules Section -->
-    <div class="bg-grey-lighten-4 py-16">
+    <div class="bg-secondary py-16">
       <v-container id="features">
-        <h2 class="text-h3 font-weight-bold text-center text-primary mb-12">Módulos Principais</h2>
+        <h2 class="text-h3 font-weight-bold text-center mb-12">Módulos</h2>
         <v-row>
           <v-col v-for="module in modules" :key="module.title" cols="12" sm="6" lg="4">
             <NuxtLink :to="module.path || '#'" class="text-decoration-none">
-              <v-card hover class="fill-height pa-2">
+              <v-card hover class="fill-height text-center pa-4" rounded="xl">
                 <v-card-item>
                   <template #prepend>
-                    <v-icon :icon="module.icon" size="x-large" color="primary"></v-icon>
+                    <v-avatar :color="module.color || 'primary'" variant="tonal" size="large" class="mb-4">
+                      <v-icon :icon="module.icon" size="x-large"></v-icon>
+                    </v-avatar>
                   </template>
-                  <v-card-title class="text-h6 font-weight-bold">{{ module.title }}</v-card-title>
                 </v-card-item>
+                <v-card-title class="text-h6 font-weight-bold">{{ module.title }}</v-card-title>
                 <v-card-text class="text-body-1">
                   {{ module.description }}
                 </v-card-text>
@@ -145,7 +153,7 @@
           </v-list>
         </v-col>
         <v-col cols="12" md="5" class="text-center">
-          <v-img src="/logo.png" alt="Laudato System Logo" width="80%" class="mx-auto rounded-xl elevation-6" />
+          <v-img src="/logo.png" alt="Laudato System Logo" width="80%" class="mx-auto rounded-xl elevation-0" />
         </v-col>
       </v-row>
     </v-container>
@@ -155,53 +163,78 @@
 <script setup>
 import { useAuthStore } from '../stores/useAuthStore';
 const authStore = useAuthStore();
-const modules = ref([
+
+const notices = ref([
   {
-    title: 'Agendamento de Missas e Liturgia',
-    description: 'Gerencie celebrações, designe leitores, ministros, músicos e envie lembretes automáticos.',
-    icon: 'mdi-calendar-clock',
+    icon: 'mdi-bell-ring',
+    color: 'secondary',
+    title: 'Campanha do Agasalho 2025',
+    text: 'Estamos arrecadando agasalhos e cobertores para ajudar as famílias necessitadas da nossa comunidade. As doações podem ser entregues na secretaria paroquial até o dia 30 de Julho.'
   },
   {
-    title: 'Gestão de Usuários e Permissões',
+    icon: 'mdi-book-open-page-variant',
+    color: 'secondary',
+    title: 'Inscrições para Catequese',
+    text: 'As inscrições para a catequese de 2025 estão abertas! Procure a secretaria paroquial para mais informações e para realizar a inscrição de seus filhos.'
+  }
+]);
+
+const modules = ref([
+  {
+    title: 'Missas e Liturgia',
+    description: 'Gerencie celebrações, designe leitores, ministros, músicos e envie lembretes automáticos.',
+    icon: 'mdi-calendar-clock',
+    color: 'teal'
+  },
+  {
+    title: 'Gestão de Usuários',
     description: 'Cadastre paroquianos, atribua funções, login seguro via e-mail, CPF ou ID de membro.',
     icon: 'mdi-account-group',
+    color: 'light-blue'
   },
   {
     title: 'Eventos e Agenda Paroquial',
     description: 'Calendário completo com eventos, reuniões e horários de missas; reserva de espaços e notificações.',
     icon: 'mdi-calendar-multiselect',
+    color: 'amber'
   },
-  {
-    title: 'Biblioteca de Documentos e Conteúdo',
-    description: 'Carregue e organize documentos da igreja; PDFs de catecismo, vídeos e artigos.',
-    icon: 'mdi-file-document-multiple',
-  },
+  // {
+  //   title: 'Biblioteca de Documentos',
+  //   description: 'Carregue e organize documentos da igreja; PDFs de catecismo, vídeos e artigos.',
+  //   icon: 'mdi-file-document-multiple',
+  //   color: 'deep-orange'
+  // },
   {
     title: 'Módulo Financeiro e de Doações',
     description: 'Gerencie dízimos, campanhas de arrecadação, gere relatórios e suporte doações online.',
     icon: 'mdi-cash-multiple',
+    color: 'green'
   },
   {
     title: 'Catequese e Formação Cristã',
     description: 'Gerencie turmas, catequistas, controle de frequência e geração automática de certificados em PDF.',
     icon: 'mdi-school',
+    color: 'purple'
   },
   {
     title: 'Comunicação Comunitária',
     description: 'Mural de notícias, mensagens em massa via WhatsApp/e-mail e integração com redes sociais.',
     icon: 'mdi-message-text',
-    path: '/community'
+    path: '/community',
+    color: 'cyan'
   },
   {
-    title: 'Gestão de Pastorais e Movimentos',
+    title: 'Pastorais e Movimentos',
     description: 'Cadastre grupos pastorais, agende reuniões e gerencie participantes.',
     icon: 'mdi-human-handsup',
+    color: 'red'
   },
   {
     title: 'Módulo Devocional',
     description: 'Intenções de missa online, velas virtuais com intenções e áudio para novenas/orações.',
     icon: 'mdi-candle',
-    path: '/devotional'
+    path: '/devotional',
+    color: 'yellow'
   },
 ]);
 
