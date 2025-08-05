@@ -36,7 +36,7 @@ async def create_warning(
     session: Session = Depends(get_session),
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
-        
+    print("Creating Warning:", warning)
     db_warning = WarningModel(**warning.model_dump())
     session.add(db_warning)
     session.commit()
