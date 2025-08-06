@@ -71,11 +71,4 @@
       loading.value = false;
     }
   }
-
-  onMounted(async () => {
-    if (!isAuthenticated) {
-      await authStore.checkLogin();
-    }
-  })
-
 </script>

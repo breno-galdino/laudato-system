@@ -3,19 +3,19 @@
   <v-container>
     <v-row justify="space-between" align="center" class="mb-8">
       <v-col>
-        <h1 class="text-h4 font-weight-bold">Gerenciar Anúncios</h1>
+        <h1 class="text-h4 font-weight-bold">Gerenciar Avisos</h1>
       </v-col>
       <v-col cols="auto">
         <v-btn color="primary" @click="() => openModal()" prepend-icon="mdi-plus">
-          Novo Anúncio
+          Novo Aviso
         </v-btn>
       </v-col>
     </v-row>
 
     <v-row v-if="announcements.length > 0">
       <v-col v-for="announcement in announcements" :key="announcement.id" cols="12" md="6" lg="4">
-        <v-card hover>
-          <v-card-title>{{ announcement.title }}</v-card-title>
+        <v-card hover variant="outlined" class="mb-4">
+          <v-card-title><v-icon>{{ categories[announcement.category_id] }}</v-icon>{{ announcement.title }}</v-card-title>
           <v-card-subtitle v-if="announcement.event_date">
             Data do Evento: {{ formatDate(announcement.event_date) }}
           </v-card-subtitle>
@@ -32,7 +32,7 @@
     <div v-else class="text-center mt-16">
       <v-icon size="64" color="grey-lighten-1">mdi-bell-off-outline</v-icon>
       <p class="text-h6 text-grey-darken-1 mt-4">Nenhum anúncio encontrado.</p>
-      <p class="text-body-1 text-grey">Parece que ainda não há anúncios disponíveis.</p>
+      <p class="text-body-1 text-grey">Parece que ainda não há avisos disponíveis.</p>
     </div>
 
     <n-modal v-model:show="showModal" preset="dialog" :title="currentAnnouncement.id ? 'Editar Anúncio' : 'Novo Anúncio'"
@@ -62,7 +62,8 @@
 
 <script setup>
 const announcements = ref([]);
-const categories = ref([]);
+const categories = ref({});
+const categoriesList = ref([]);
 const showModal = ref(false);
 const currentAnnouncement = ref({
   id: null,
@@ -76,7 +77,13 @@ const fetchAnnouncements = async () => {
   try {
     const { data } = await asyncUseApi("/warnings/");
     const { data: categoriesData } = await asyncUseApi("/category/");
-    categories.value = categoriesData.value;
+
+    categoriesList.value = categoriesData.value;
+
+    categoriesData.value.forEach((item) => {
+      categories.value[item.id] = item.icon;
+    });
+
     announcements.value = data.value;
   } catch (error) {
     console.error("Erro ao buscar anúncios:", error);
@@ -142,7 +149,7 @@ const formatDate = (dateStr) => {
 };
 
 const categoryOptions = computed(() =>
-  categories.value.map((cat) => ({
+  categoriesList.value.map((cat) => ({
     label: cat.name,
     value: cat.id,
   }))

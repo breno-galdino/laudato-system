@@ -32,8 +32,6 @@ async def login(
     access_token = create_access_token(
         data={
             "sub": str(user.id),
-            "username": user.username,
-            "email": user.email,
             "scopes": user_scopes,
         }
     )
@@ -41,16 +39,6 @@ async def login(
     response.set_cookie(
         key=settings.TOKEN_NAME,
         value=access_token,
-        httponly=True,
-        secure=False,
-        samesite="Lax",
-        max_age=60 * 60,
-        path="/",
-    )
-    
-    response.set_cookie(
-        key="user",
-        value=user.id,
         httponly=True,
         secure=False,
         samesite="Lax",
@@ -66,12 +54,11 @@ def logout(response: Response, user: str = Depends(get_current_active_user)):
         return {"message": "You're not logged in"}
     
     response.delete_cookie(key=settings.TOKEN_NAME, path="/")
-    response.delete_cookie(key="user", path="/")
     redis_client.delete(f"token:{user.id}")
     
     return {"message": "You have been logged out successfully"}
 
-@router.get("/profile", response_model=UserResponse)
+@router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 

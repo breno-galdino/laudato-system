@@ -22,7 +22,7 @@ export const useAuthStore = defineStore("auth", {
 
       this.loading = true;
       try {
-        const { data } = await asyncUseApi("/auth/login/", {
+        const { data } = await asyncUseApi("/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchUser() {
       try {
-        const { data } = await asyncUseApi("/auth/profile/", {
+        const { data } = await asyncUseApi("/auth/me", {
           onResponse({ request, response, options }) {
             // Handle response if needed
           },
@@ -51,12 +51,13 @@ export const useAuthStore = defineStore("auth", {
       } catch (err) {
         console.error("Erro ao buscar usuário:", err);
         this.user = null;
+        this.isAuthenticated = !!this.user;
       }
     },
 
     async logout() {
       try {
-        await asyncUseApi("/auth/logout/");
+        await asyncUseApi("/auth/logout");
       } catch (err) {
         console.error("Erro ao fazer logout:", err);
       }

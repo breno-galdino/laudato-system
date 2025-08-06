@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     baseURL: "/laudatosi",
   },
-
+  
   modules: [
     "@nuxt/icon",
     [

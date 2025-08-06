@@ -3,8 +3,7 @@
     <n-h1 align="center" class="mb-12">Painel de Gerenciamento</n-h1>
     <v-row>
       <v-col v-for="item in managementItems" :key="item.title" cols="12" md="6">
-        <NuxtLink :to="item.to" class="text-decoration-none">
-          <v-card hover class="fill-height">
+          <v-card hover :to="item.to" class="fill-height" variant="outlined" elevation="2">
             <v-card-text>
               <div class="d-flex align-center">
                 <v-avatar :color="item.color" size="56" class="mr-4">
@@ -17,7 +16,6 @@
               </div>
             </v-card-text>
           </v-card>
-        </NuxtLink>
       </v-col>
     </v-row>
   </v-container>
