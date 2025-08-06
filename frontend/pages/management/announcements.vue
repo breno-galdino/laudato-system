@@ -11,25 +11,53 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-list
+      v-if="announcements.length > 0"
+      class="pa-0"
+      style="border: 1px solid rgb(var(--v-theme-primary)); border-radius: 12px; background: #fafbfc;"
+      density="compact"
+    >
+      <v-list-item
+        v-for="announcement in announcements"
+        :key="announcement.id"
+        class="d-flex align-center pa-2"
+        style="border-bottom: 1.5px solid #e0e0e0;"
+      >
+        <div class="d-flex align-center" style="width: 100%;">
+          <v-icon class="mr-3" size="32">{{ categories[announcement.category_id] }}</v-icon>
+          <div class="flex-grow-1 d-flex flex-column">
+            <div class="font-weight-bold text-body-1">{{ announcement.title }}</div>
+            <div v-if="announcement.event_date" class="text-caption text-grey-darken-1">
+              Data do Evento: {{ formatDate(announcement.event_date) }}
+            </div>
+            <div class="text-caption text-grey-darken-2">{{ announcement.content }}</div>
+          </div>
+          <div class="d-flex align-center" style="margin-left: auto;">
+            <v-btn
+              color="warning"
+              variant="text"
+              size="small"
+              @click="openModal(announcement)"
+              class="mr-2"
+              style="min-width: 32px;"
+            >
+              Editar
+            </v-btn>
+            <v-btn
+              color="error"
+              variant="text"
+              size="small"
+              @click="deleteAnnouncement(announcement.id)"
+              style="min-width: 32px;"
+            >
+              Excluir
+            </v-btn>
+          </div>
+        </div>
+      </v-list-item>
+    </v-list>
 
-    <v-row v-if="announcements.length > 0">
-      <v-col v-for="announcement in announcements" :key="announcement.id" cols="12" md="6" lg="4">
-        <v-card hover variant="outlined" class="mb-4">
-          <v-card-title><v-icon>{{ categories[announcement.category_id] }}</v-icon>{{ announcement.title }}</v-card-title>
-          <v-card-subtitle v-if="announcement.event_date">
-            Data do Evento: {{ formatDate(announcement.event_date) }}
-          </v-card-subtitle>
-          <v-card-text>{{ announcement.content }}</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="warning" variant="text" @click="openModal(announcement)">Editar</v-btn>
-            <v-btn color="error" variant="text" @click="deleteAnnouncement(announcement.id)">Excluir</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <div v-else class="text-center mt-16">
+    <div v-else class="text-center my-16">
       <v-icon size="64" color="grey-lighten-1">mdi-bell-off-outline</v-icon>
       <p class="text-h6 text-grey-darken-1 mt-4">Nenhum anúncio encontrado.</p>
       <p class="text-body-1 text-grey">Parece que ainda não há avisos disponíveis.</p>
@@ -112,7 +140,7 @@ const saveAnnouncement = async () => {
   currentAnnouncement.value.event_date = currentAnnouncement.value.event_date
     ? new Date(currentAnnouncement.value.event_date).toISOString()
     : null;
-  console.log("Salvando anúncio:", currentAnnouncement.value);
+    
   try {
     if (currentAnnouncement.value.id) {
       await asyncUseApi(`/warnings/${currentAnnouncement.value.id}`, {
@@ -120,7 +148,7 @@ const saveAnnouncement = async () => {
         body: currentAnnouncement.value,
       });
     } else {
-      useApi("/warnings/", {
+      await asyncUseApi("/warnings/", {
         method: "POST",
         body: currentAnnouncement.value,
       });

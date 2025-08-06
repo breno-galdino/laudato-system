@@ -53,7 +53,6 @@ async def update_warning(
     session: Session = Depends(get_session),
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
-        
     db_warning = session.get(WarningModel, warning_id)
     if not db_warning:
         raise HTTPException(status_code=404, detail="Warning not found")
