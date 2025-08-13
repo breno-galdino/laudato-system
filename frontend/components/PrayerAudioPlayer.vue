@@ -1,12 +1,11 @@
-
 <template>
-  <div class="bg-gray-100 p-4 rounded-lg shadow-md flex items-center">
-    <div class="flex-grow">
-      <h3 class="text-xl font-bold text-gray-800">{{ prayer.title }}</h3>
-      <p class="text-gray-600">{{ prayer.description }}</p>
+  <v-card class="d-flex flex-column flex-md-row align-center pa-4">
+    <div class="flex-grow-1">
+      <v-card-title class="text-h5">{{ prayer.title }}</v-card-title>
+      <v-card-subtitle>{{ prayer.description }}</v-card-subtitle>
     </div>
-    <audio controls :src="prayer.audioSrc" class="w-full md:w-auto mt-4 md:mt-0"></audio>
-  </div>
+    <audio controls :src="prayer.audioSrc" class="mt-4 mt-md-0"></audio>
+  </v-card>
 </template>
 
 <script setup>

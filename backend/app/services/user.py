@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, HTTPException, Security, status, Request
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from fastapi.security import SecurityScopes
 from pydantic import ValidationError
 from typing import Annotated
 from jose import JWTError
@@ -40,12 +40,6 @@ async def get_current_user(
     request: Request,
     session: Session = Depends(get_session),
 ):
-    cached_data = redis_client.get(settings.TOKEN_NAME)
-    if cached_data:
-        print("Cached Data User - Redis")
-        user_data = json.loads(cached_data)
-        return User.model_validate(user_data)
-
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -53,17 +47,28 @@ async def get_current_user(
     )
     try:
         payload = decode_token(request, settings.TOKEN_NAME)
-        email = payload.get("email")
-        username = payload.get("username")
-        if email is None:
+        user_id = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(scopes=token_scopes)
     except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user(session, email=email)
+    
+    cached_data = redis_client.get(f"token:{user_id}")
+    if cached_data:
+        print("Cached Data User - Redis")
+        user_data = json.loads(cached_data)
+        return User.model_validate(user_data)
+    
+    user = session.get(User, user_id)
     if user is None:
         raise credentials_exception
+    
+    redis_client.setex(
+        f"token:{user_id}", 3600, json.dumps(user.model_dump(), default=str)
+    )
+    
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
             raise HTTPException(
@@ -71,10 +76,6 @@ async def get_current_user(
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-
-    redis_client.setex(
-        settings.TOKEN_NAME, 3600, json.dumps(user.model_dump(), default=str)
-    )
 
     return user
 

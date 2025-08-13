@@ -5,6 +5,7 @@ from sqlmodel import Session, select
 
 from ...core.security import hash_password, create_access_token
 from ...core.config import settings
+from ...core.redis import redis_client
 from ...services.user import authenticate_user, get_current_active_user
 from ...schemas.auth import Token, UserCreate, UserResponse
 from ...models.users import User, UserScope, Scope
@@ -31,8 +32,6 @@ async def login(
     access_token = create_access_token(
         data={
             "sub": str(user.id),
-            "username": user.username,
-            "email": user.email,
             "scopes": user_scopes,
         }
     )
@@ -55,10 +54,11 @@ def logout(response: Response, user: str = Depends(get_current_active_user)):
         return {"message": "You're not logged in"}
     
     response.delete_cookie(key=settings.TOKEN_NAME, path="/")
+    redis_client.delete(f"token:{user.id}")
     
     return {"message": "You have been logged out successfully"}
 
-@router.get("/profile", response_model=UserResponse)
+@router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 

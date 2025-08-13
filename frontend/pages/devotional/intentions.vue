@@ -1,25 +1,27 @@
-
 <template>
-  <div class="bg-white min-h-screen py-12">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Intenções de Missa</h1>
-      <div class="grid md:grid-cols-2 gap-12">
-        <div>
-          <MassIntentionForm />
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">Intenções Enviadas</h2>
-          <div class="space-y-4">
-            <div v-for="intention in intentions" :key="intention.id" class="bg-gray-100 p-4 rounded-lg shadow-sm">
-              <p class="font-semibold">{{ intention.name }}</p>
-              <p class="text-gray-600">{{ intention.intention }}</p>
-              <p class="text-sm text-gray-500 text-right">{{ intention.status }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <n-h1 align="center" class="mb-8">Intenções de Missa</n-h1>
+    <v-row justify="center" :gutter="48">
+      <v-col cols="12" md="6">
+        <MassIntentionForm />
+      </v-col>
+      <v-col cols="12" md="6">
+        <n-h2>Intenções Enviadas</n-h2>
+        <n-space vertical size="large">
+          <v-card v-for="intention in intentions" :key="intention.id" variant="outlined">
+            <v-card-title>{{ intention.name }}</v-card-title>
+            <v-card-text>{{ intention.intention }}</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-chip :color="intention.status === 'Aprovada' ? 'success' : 'warning'" label>
+                {{ intention.status }}
+              </v-chip>
+            </v-card-actions>
+          </v-card>
+        </n-space>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
