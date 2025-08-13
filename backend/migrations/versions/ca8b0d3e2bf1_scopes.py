@@ -9,6 +9,7 @@ from typing import Sequence, Union
 import sqlmodel
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -28,10 +29,10 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('userscope',
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('scope_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['scope_id'], ['scope.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'scope_id')
     )
     op.create_index(op.f('ix_category_name'), 'category', ['name'], unique=False)

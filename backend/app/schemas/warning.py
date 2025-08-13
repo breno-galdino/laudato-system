@@ -1,12 +1,15 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from pydantic_settings import SettingsConfigDict
 
 class WarningBase(BaseModel):
     title: str
     event_date: datetime 
     content: str
     category_id: int
+    
+    model_config = SettingsConfigDict(from_attributes=True)
     
 class WarningCreate(WarningBase):
     pass

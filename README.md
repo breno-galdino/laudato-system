@@ -55,17 +55,12 @@ O Sistema Paroquial Integrado foi idealizado para servir como uma ferramenta dig
 - Envio em massa de mensagens via e-mail ou WhatsApp
 - Integração com redes sociais (Instagram/Facebook)
 
-### ✅ 8. Cadastro de Sacramentos
-- Registro e histórico sacramental de cada fiel
-- Emissão de certidões (batismo, casamento, crisma)
-- Busca e emissão rápida de segunda via
-
-### ✅ 9. Gestão de Pastorais e Movimentos
+### ✅ 8. Gestão de Pastorais e Movimentos
 - Cadastro de grupos e coordenações
 - Agendamento de reuniões
 - Registro de participantes
 
-### ✅ 10. Módulo Devocional
+### ✅ 9. Módulo Devocional
 - Intenções de missa online (com aprovação do pároco)
 - Acendimento de velas virtuais com intenções
 - Áudio/orientações para novenas e orações

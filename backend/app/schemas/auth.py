@@ -1,30 +1,32 @@
 from pydantic import BaseModel, EmailStr
+from pydantic_settings import SettingsConfigDict
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 
-class User(BaseModel):
+class UserBase(BaseModel):
+    full_name: Optional[str] = None
     is_active: Optional[bool] = True
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
 
-class UserCreate(User):
+class UserCreate(UserBase):
     email: EmailStr
     password: str
     username: str
 
-class UserResponse(User):
-    id: int
-    full_name: Optional[str] = None
+class UserResponse(UserBase):
+    id: UUID
     email: EmailStr
     username: str
+    created_at: datetime
+    updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = SettingsConfigDict(from_attributes=True)
+
 
 class Token(BaseModel):
     access_token: str
     token_type: str
     
 class TokenData(BaseModel):
-    username: str | None = None
+    id: UUID | None = None
     scopes: list[str] = []

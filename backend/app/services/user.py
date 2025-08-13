@@ -1,15 +1,18 @@
-from fastapi import Depends, HTTPException, HTTPException, Security, status
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from fastapi import Depends, HTTPException, HTTPException, Security, status, Request
+from fastapi.security import SecurityScopes
 from pydantic import ValidationError
 from typing import Annotated
 from jose import JWTError
-
 from sqlmodel import Session, select
-from app.database import get_session, engine
-from app.models.users import User, Scope
-from app.core.security import verify_password
-from app.services.auth import decode_token
-from app.schemas.auth import TokenData
+import json
+
+from ..database import get_session, engine
+from ..core.security import verify_password
+from ..core.redis import redis_client
+from ..core.config import settings
+from ..services.auth import decode_token
+from ..models.users import User, Scope
+from ..schemas.auth import TokenData
 
 
 def load_scopes_from_db() -> dict:
@@ -19,11 +22,6 @@ def load_scopes_from_db() -> dict:
 
 
 scopes = load_scopes_from_db()
-
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="auth/token",
-    scopes=scopes,
-)
 
 
 def get_user(session: Session, email: str):
@@ -39,38 +37,46 @@ def authenticate_user(session: Session, email: str, password: str) -> User:
 
 async def get_current_user(
     security_scopes: SecurityScopes,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    request: Request,
     session: Session = Depends(get_session),
 ):
-    if security_scopes.scopes:
-        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
-    else:
-        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": authenticate_value},
+        headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = decode_token(token)
-        email = payload.get("email")
-        username = payload.get("username")
-        if email is None:
+        payload = decode_token(request, settings.TOKEN_NAME)
+        user_id = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(scopes=token_scopes)
     except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user(session, email=email)
+    
+    cached_data = redis_client.get(f"token:{user_id}")
+    if cached_data:
+        print("Cached Data User - Redis")
+        user_data = json.loads(cached_data)
+        return User.model_validate(user_data)
+    
+    user = session.get(User, user_id)
     if user is None:
         raise credentials_exception
+    
+    redis_client.setex(
+        f"token:{user_id}", 3600, json.dumps(user.model_dump(), default=str)
+    )
+    
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
+                headers={"WWW-Authenticate": "Bearer"},
             )
+
     return user
 
 
