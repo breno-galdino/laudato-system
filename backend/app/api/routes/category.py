@@ -19,7 +19,7 @@ _cache_key = "categories:all"
 def get_categories(session: Session = Depends(get_session)):    
     cached_data = redis_client.get(_cache_key)
     if cached_data:
-        print("Cached Data - Redis")
+        print("Cached Data Category - Redis")
         return json.loads(cached_data)
     
     categories = session.exec(select(CategoryModel)).all()

@@ -51,19 +51,19 @@
         <v-row class="px-2" justify="space-between" align="start">
           <!-- Coluna 1: Informações da Paróquia -->
           <v-col cols="12" md="4">
-            <h4 class="text-h6 font-weight-bold mb-2">Paróquia São João Batista</h4>
+            <h4 class="text-h6 font-weight-bold mb-2">Paróquia São Pedro e São Paulo</h4>
             <p class="text-body-2">
-              Rua das Flores, 123<br>
-              Centro - Cidade/UF<br>
-              CEP: 00000-000
+              Av. Dom Pedro de Alcântara 225<br>
+              São Bernardo do Campo, SP<br>
+              CEP: 09784-000
             </p>
             <p class="text-body-2 mt-2">
               <v-icon start size="small">mdi-email</v-icon>
-              contato@paroquia.com.br
+              paroquiasaopedroepaulo@gmail.com
             </p>
             <p class="text-body-2">
               <v-icon start size="small">mdi-phone</v-icon>
-              (11) 1234-5678
+              (11) 93716-2091
             </p>
           </v-col>
 
@@ -71,10 +71,10 @@
           <v-col cols="12" md="4">
             <h4 class="text-h6 font-weight-bold mb-2">Links úteis</h4>
             <v-list density="compact" nav class="bg-transparent">
-              <v-list-item to="/about" title="Sobre a Plataforma" prepend-icon="mdi-information-outline" />
-              <v-list-item to="/contact" title="Fale Conosco" prepend-icon="mdi-email-outline" />
-              <v-list-item to="/privacy" title="Política de Privacidade" prepend-icon="mdi-shield-lock-outline" />
-              <v-list-item to="/terms" title="Termos de Uso" prepend-icon="mdi-file-document-outline" />
+              <v-list-item title="Sobre a Plataforma" prepend-icon="mdi-information-outline" />
+              <v-list-item title="Fale Conosco" prepend-icon="mdi-email-outline" />
+              <v-list-item title="Política de Privacidade" prepend-icon="mdi-shield-lock-outline" />
+              <v-list-item title="Termos de Uso" prepend-icon="mdi-file-document-outline" />
             </v-list>
           </v-col>
 
@@ -82,16 +82,16 @@
           <v-col cols="12" md="4">
             <h4 class="text-h6 font-weight-bold mb-2">Siga-nos</h4>
             <div class="d-flex ga-4">
-              <v-btn icon size="small" variant="text" color="white" href="https://facebook.com" target="_blank">
+              <v-btn icon size="small" variant="text" href="https://www.facebook.com/saopedroepaulo/" color="white" target="_blank">
                 <v-icon size="24">mdi-facebook</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" color="white" href="https://instagram.com" target="_blank">
+              <v-btn icon size="small" variant="text" href="https://www.instagram.com/saopedroepaulo" color="white" target="_blank">
                 <v-icon size="24">mdi-instagram</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" color="white" href="https://youtube.com" target="_blank">
+              <v-btn icon size="small" variant="text" href="https://www.youtube.com/channel/UCYZVXTFEfNsPWQVLJLtw3dg" color="white" target="_blank">
                 <v-icon size="24">mdi-youtube</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" color="white" href="https://wa.me/5511999999999" target="_blank">
+              <v-btn icon size="small" variant="text" color="white" target="_blank">
                 <v-icon size="24">mdi-whatsapp</v-icon>
               </v-btn>
             </div>
