@@ -19,6 +19,7 @@ dependencies = [
     "sqlmodel>=0.0.24",
     "taskipy>=1.14.1",
     "redis>=5.0.8",
+    "graphemy>=1.1.1",
 ]
 
 [tool.taskipy]

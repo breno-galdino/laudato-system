@@ -4,7 +4,7 @@ import logging
 
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 
-from .api.routes import auth, category, warning
+from .api.routes import auth, category, warning, graphql
 
 app = FastAPI()
 
@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(category.router)
 app.include_router(warning.router)
+app.include_router(graphql.router)
 
 @app.get("/")
 def read_root():
