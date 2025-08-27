@@ -51,7 +51,6 @@
     <!-- Masses and Events Section -->
     <div style="background: linear-gradient(0deg, rgb(var(--v-theme-secondary)) 0%, #ECEFF1 60%);">
       <v-container class="py-16">
-        <!-- <h2 class="text-h3 font-weight-bold text-center text-primary mb-12">Calendário Paroquial</h2> -->
         <v-row justify="center" class="ga-8">
           <v-col cols="12" md="5">
             <v-card elevation="4" rounded="lg">
@@ -59,18 +58,18 @@
                 <v-card-title class="text-center text-h4 font-weight-medium">Próximas Missas</v-card-title>
               </v-card-item>
               <v-card-text>
-                <v-timeline side="end" align="center" truncate-line="both" density="compact" class="py-6 px-2">
-                  <v-timeline-item dot-color="primary" size="small" fill-dot>
-                    <v-card variant="tonal" color="primary" width="320px">
-                      <v-card-title class="text-subtitle-1">09:00 - Missa Dominical</v-card-title>
+                <v-timeline side="end" align="center" truncate-line="both" density="compact" class="py-6">
+                  <v-timeline-item dot-color="primary" size="small" fill-dot width="100%">
+                    <v-card variant="tonal" color="primary">
+                      <v-card-title class="text-subtitle-1" >09:00 - Missa Dominical</v-card-title>
                       <v-card-text class="text-caption">
                         <div>Igreja Matriz</div>
                         <div>Celebrante: Pe. João Silva</div>
                       </v-card-text>
                     </v-card>
                   </v-timeline-item>
-                  <v-timeline-item dot-color="secondary" size="small" fill-dot>
-                    <v-card variant="tonal" color="secondary" width="320px">
+                  <v-timeline-item dot-color="secondary" size="small" fill-dot width="100%">
+                    <v-card variant="tonal" color="secondary">
                       <v-card-title class="text-subtitle-1">18:00 - Missa da Família</v-card-title>
                       <v-card-text class="text-caption">
                         <div>Capela São José</div>
@@ -78,8 +77,8 @@
                       </v-card-text>
                     </v-card>
                   </v-timeline-item>
-                  <v-timeline-item dot-color="primary" size="small" fill-dot>
-                    <v-card variant="tonal" color="primary" width="320px">
+                  <v-timeline-item dot-color="primary" size="small" fill-dot width="100%">
+                    <v-card variant="tonal" color="primary">
                       <v-card-title class="text-subtitle-1">19:30 - Missa Semanal</v-card-title>
                       <v-card-text class="text-caption">
                         <div>Igreja Matriz</div>
@@ -169,6 +168,8 @@
 
 <script setup>
   import { useAuthStore } from '../stores/useAuthStore';
+  import Category from '@/queries/category.gql';
+
   const authStore = useAuthStore();
   const categories = ref({});
   const notices = ref([]);

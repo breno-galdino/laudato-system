@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   },
   
   modules: [
-    "@nuxt/icon",
+    "@nuxt/icon", '@nuxtjs/apollo',
     [
       "@pinia/nuxt",
       {
@@ -13,6 +13,21 @@ export default defineNuxtConfig({
       },
     ],
   ],
+
+  apollo: {
+    clients: {
+      default: {
+        httpEndpoint: process.env.API_URL + "graphql",
+        tokenStorage: "cookie",
+        httpLinkOptions: {
+          credentials: "include",
+        },
+        inMemoryCacheOptions: {
+          addTypename: false,
+        },
+      },
+    },
+  },
 
   ssr: false,
 

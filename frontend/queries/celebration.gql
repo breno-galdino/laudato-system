@@ -1,0 +1,7 @@
+query Celebration {
+  celebrations {
+    date
+    description
+    id
+  }
+}

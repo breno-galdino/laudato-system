@@ -1,0 +1,8 @@
+query Category {
+  categorys {
+    name
+    id
+    icon
+    description
+  }
+}

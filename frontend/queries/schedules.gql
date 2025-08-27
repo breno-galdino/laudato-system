@@ -1,0 +1,15 @@
+query GetCelebrations {
+  celebrations {
+    date
+    description
+    id
+  }
+  users {
+    id
+    username
+  }
+  roles {
+    id
+    name
+  }
+}

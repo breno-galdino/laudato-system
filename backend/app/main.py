@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 
+from .api.graphql import graphql
+from .api.routes import auth, category, warning, celebration
+
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 
-from .api.routes import auth, category, warning, graphql
 
 app = FastAPI()
 
@@ -24,6 +26,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(category.router)
 app.include_router(warning.router)
+app.include_router(celebration.router)
 app.include_router(graphql.router)
 
 @app.get("/")
