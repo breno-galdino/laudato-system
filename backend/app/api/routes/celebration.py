@@ -59,7 +59,6 @@ def create_assignments(
         user_id = assignment['user_id']
         role_id = assignment['role_id']
 
-        # Verifica duplicado antes de criar
         existing = session.exec(
             select(Assignment).where(
                 Assignment.celebration_id == celebration_id,
