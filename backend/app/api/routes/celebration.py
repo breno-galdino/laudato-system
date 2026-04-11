@@ -4,30 +4,71 @@ from sqlmodel import Session, select
 import json
 
 from ...database import get_session
-
 from ...core.redis import redis_client
 from ...models.celebration import Celebration as CelebrationModel, Role, Assignment
 from ...models.users import User
-from ...schemas.celebration import CelebrationCreate, CelebrationRead, CelebrationUpdate, AssignmentRole
+from ...schemas.celebration import (
+    CelebrationCreate,
+    CelebrationRead,
+    CelebrationUpdate,
+    CelebrationReadFull,
+    AssignmentDetail,
+    AssignmentRole,
+    RoleRead,
+)
 from ...services.user import get_current_user
 
 router = APIRouter(prefix="/celebration", tags=["celebration"])
+
 _cache_key = "celebration:all"
 
-@router.get("/", response_model=list[CelebrationRead])
-def get_celebrations(session: Session = Depends(get_session)):    
+
+def _build_celebrations_full(session: Session) -> list[CelebrationReadFull]:
+    celebrations = session.exec(select(CelebrationModel)).all()
+    result = []
+    for cel in celebrations:
+        rows = session.exec(
+            select(Assignment, User, Role)
+            .join(User, Assignment.user_id == User.id)
+            .join(Role, Assignment.role_id == Role.id)
+            .where(Assignment.celebration_id == cel.id)
+        ).all()
+        assignments = [
+            AssignmentDetail(
+                id=a.id,
+                user_id=a.user_id,
+                user_name=u.username,
+                role_id=a.role_id,
+                role_name=r.name,
+            )
+            for a, u, r in rows
+        ]
+        result.append(
+            CelebrationReadFull(
+                id=cel.id,
+                date=cel.date,
+                description=cel.description,
+                assignments=assignments,
+            )
+        )
+    return result
+
+
+@router.get("/", response_model=list[CelebrationReadFull])
+def get_celebrations(session: Session = Depends(get_session)):
     cached_data = redis_client.get(_cache_key)
     if cached_data:
-        print("Cached Data Celebration - Redis")
         return json.loads(cached_data)
-    
-    celebrations = session.exec(select(CelebrationModel)).all()
-    
-    serialized = jsonable_encoder(celebrations)
 
+    result = _build_celebrations_full(session)
+    serialized = jsonable_encoder(result)
     redis_client.setex(_cache_key, 600, json.dumps(serialized))
-    
-    return celebrations
+    return result
+
+
+@router.get("/roles/", response_model=list[RoleRead])
+def get_roles(session: Session = Depends(get_session)):
+    return session.exec(select(Role)).all()
 
 
 @router.post("/", response_model=CelebrationRead, status_code=201)
@@ -40,54 +81,75 @@ def create_celebration(
     session.add(db_celebration)
     session.commit()
     session.refresh(db_celebration)
-    
     redis_client.delete(_cache_key)
     return db_celebration
 
-@router.post("/assign", response_model=list[Assignment], status_code=201)
+
+@router.post("/assign", response_model=list[AssignmentDetail], status_code=201)
 def create_assignments(
     celebration_id: int,
     assignments: list[AssignmentRole],
     session: Session = Depends(get_session),
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
-    created_assignments = []
-
-    for assignment in assignments:
-        assignment = AssignmentRole.model_validate(assignment)
-        assignment = assignment.model_dump()
-        user_id = assignment['user_id']
-        role_id = assignment['role_id']
-
+    created = []
+    for item in assignments:
+        item = AssignmentRole.model_validate(item)
         existing = session.exec(
             select(Assignment).where(
                 Assignment.celebration_id == celebration_id,
-                Assignment.user_id == user_id,
-                Assignment.role_id == role_id
+                Assignment.user_id == item.user_id,
+                Assignment.role_id == item.role_id,
             )
         ).first()
-
         if existing:
             continue
-
         new_assignment = Assignment(
             celebration_id=celebration_id,
-            user_id=user_id,
-            role_id=role_id
+            user_id=item.user_id,
+            role_id=item.role_id,
         )
         session.add(new_assignment)
-        created_assignments.append(new_assignment)
+        created.append(new_assignment)
 
     session.commit()
+    for a in created:
+        session.refresh(a)
 
-    # refresh todos os criados
-    for assignment in created_assignments:
-        session.refresh(assignment)
+    result = []
+    for a in created:
+        user = session.get(User, a.user_id)
+        role = session.get(Role, a.role_id)
+        result.append(
+            AssignmentDetail(
+                id=a.id,
+                user_id=a.user_id,
+                user_name=user.username if user else "",
+                role_id=a.role_id,
+                role_name=role.name if role else "",
+            )
+        )
 
-    return created_assignments
+    redis_client.delete(_cache_key)
+    return result
+
+
+@router.delete("/assign/{assignment_id}", status_code=204)
+def delete_assignment(
+    assignment_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Security(get_current_user, scopes=["admin"]),
+):
+    assignment = session.get(Assignment, assignment_id)
+    if not assignment:
+        raise HTTPException(status_code=404, detail="Assignment not found")
+    session.delete(assignment)
+    session.commit()
+    redis_client.delete(_cache_key)
+
 
 @router.put("/{celebration_id}", response_model=CelebrationRead)
-def update_category(
+def update_celebration(
     celebration_id: int,
     celebration: CelebrationUpdate,
     session: Session = Depends(get_session),
@@ -103,7 +165,6 @@ def update_category(
     session.add(db_celebration)
     session.commit()
     session.refresh(db_celebration)
-    
     redis_client.delete(_cache_key)
     return db_celebration
 
@@ -120,6 +181,4 @@ def delete_celebration(
 
     session.delete(db_celebration)
     session.commit()
-    
     redis_client.delete(_cache_key)
-    return

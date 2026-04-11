@@ -23,6 +23,13 @@ class UserResponse(UserBase):
     model_config = SettingsConfigDict(from_attributes=True)
 
 
+class UserSimple(BaseModel):
+    id: UUID
+    username: str
+
+    model_config = SettingsConfigDict(from_attributes=True)
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str

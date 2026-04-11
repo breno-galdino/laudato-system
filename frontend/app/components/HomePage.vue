@@ -167,8 +167,8 @@
 </template>
 
 <script setup>
-  import { useAuthStore } from '../stores/useAuthStore';
   import Category from '@/queries/category.gql';
+  import { useAuthStore } from '~/stores/useAuthStore.js';
 
   const authStore = useAuthStore();
   const categories = ref({});

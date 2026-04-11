@@ -1,18 +1,22 @@
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
+
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     baseURL: "/laudatosi",
   },
-  
+
   modules: [
-    "@nuxt/icon", '@nuxtjs/apollo',
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
-      },
-    ],
+    "@nuxt/icon",
+    "@nuxtjs/apollo",
+    "@pinia/nuxt",
   ],
+
+  pinia: {
+    storesDirs: ["./app/stores/**"],
+  },
 
   apollo: {
     clients: {
@@ -31,7 +35,21 @@ export default defineNuxtConfig({
 
   ssr: false,
 
-  css: ["vuetify/lib/styles/main.sass"],
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'naive-ui',
+        'apollo-upload-client/createUploadLink.mjs',
+        '@apollo/client',
+        '@vue/apollo-composable',
+        'pinia',
+      ],
+    },
+  },
+
+  css: ["vuetify/styles"],
 
   build: {
     transpile: ["vuetify"],
@@ -43,5 +61,5 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: "2025-05-15",
+  compatibilityDate: "2026-04-11",
 });

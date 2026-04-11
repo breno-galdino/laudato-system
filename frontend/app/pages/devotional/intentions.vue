@@ -26,7 +26,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import MassIntentionForm from '~/components/MassIntentionForm.vue';
 
 const intentions = ref([
   { id: 1, name: 'João da Silva', intention: 'Pela saúde da minha família', status: 'Aprovação Pendente' },

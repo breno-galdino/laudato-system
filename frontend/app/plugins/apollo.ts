@@ -1,4 +1,5 @@
-import { ApolloClient, NormalizedCacheObject, from } from "@apollo/client/core";
+import { ApolloClient, from } from "@apollo/client/core";
+import type { NormalizedCacheObject } from "@apollo/client/core";
 import { provideApolloClient } from "@vue/apollo-composable";
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";

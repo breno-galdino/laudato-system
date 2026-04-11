@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, Depends, HTTPException
+from fastapi import APIRouter, Response, Depends, HTTPException, Security
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
@@ -6,8 +6,8 @@ from sqlmodel import Session, select
 from ...core.security import hash_password, create_access_token
 from ...core.config import settings
 from ...core.redis import redis_client
-from ...services.user import authenticate_user, get_current_active_user
-from ...schemas.auth import Token, UserCreate, UserResponse
+from ...services.user import authenticate_user, get_current_active_user, get_current_user
+from ...schemas.auth import Token, UserCreate, UserResponse, UserSimple
 from ...models.users import User, UserScope, Scope
 from ...database import get_session
 
@@ -61,6 +61,14 @@ def logout(response: Response, user: str = Depends(get_current_active_user)):
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
+
+
+@router.get("/users/", response_model=list[UserSimple])
+def list_users(
+    session: Session = Depends(get_session),
+    current_user: User = Security(get_current_user, scopes=["admin"]),
+):
+    return session.exec(select(User).where(User.is_active == True)).all()
 
 
 @router.post("/register", response_model=UserResponse)

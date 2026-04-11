@@ -13,7 +13,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import PrayerAudioPlayer from '~/components/PrayerAudioPlayer.vue';
 
 const prayers = ref([
   { id: 1, title: 'O Santo Rosário', description: 'Uma bela recitação do Santo Rosário.', audioSrc: '' },

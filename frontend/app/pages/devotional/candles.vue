@@ -13,7 +13,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import VirtualCandle from '~/components/VirtualCandle.vue';
 
 const candles = ref([
   { id: 1, intention: 'Pela paz no mundo' },

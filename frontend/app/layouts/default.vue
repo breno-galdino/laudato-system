@@ -113,8 +113,7 @@
 </template>
 
 <script setup>
-  import { useAuthStore } from '@/stores/useAuthStore';
-
+  import { useAuthStore } from '~/stores/useAuthStore.js';
   const authStore = useAuthStore();
   const drawer = ref(true);
   const rail = ref(true);
