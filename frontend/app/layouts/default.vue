@@ -32,9 +32,11 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn size="small" class="text-none" to="/" exact>Início</v-btn>
-      <v-btn size="small" to="/community" class="text-none">Comunidade</v-btn>
-      <v-btn size="small" to="/devotional" class="text-none">Devocional</v-btn>
-      <v-btn size="small" to="/management" class="text-none">Gestão</v-btn>
+      <template v-if="authStore.user">
+        <v-btn size="small" to="/community" class="text-none">Comunidade</v-btn>
+        <v-btn size="small" to="/devotional" class="text-none">Devocional</v-btn>
+        <v-btn v-if="authStore.canManage" size="small" to="/management" class="text-none">Gestão</v-btn>
+      </template>
       <div v-if="!authStore.user" class="ml-4">
         <v-btn size="small" to="/login" color="accent" class="text-none" rounded>Entrar</v-btn>
         <v-btn size="small" to="/register" color="accent" class="text-none" rounded>Cadastre-se</v-btn>
@@ -60,61 +62,54 @@
       <slot />
     </v-main>
 
-    <v-footer class="bg-blue-grey-darken-4 text-white pt-10" padless>
+    <v-footer class="bg-blue-grey-darken-4 text-white footer-compact" padless>
       <v-container>
-        <v-row class="px-2" justify="space-between" align="start">
-          <!-- Coluna 1: Informações da Paróquia -->
-          <v-col cols="12" md="4">
-            <h4 class="text-h6 font-weight-bold mb-2">{{ authStore.parish?.name || 'Laudato System' }}</h4>
-            <p v-if="authStore.parish?.address" class="text-body-2">
-              {{ authStore.parish.address }}
-            </p>
-            <p v-if="authStore.parish?.email" class="text-body-2 mt-2">
-              <v-icon start size="small">mdi-email</v-icon>
-              {{ authStore.parish.email }}
-            </p>
-            <p v-if="authStore.parish?.phone" class="text-body-2">
-              <v-icon start size="small">mdi-phone</v-icon>
-              {{ authStore.parish.phone }}
-            </p>
-          </v-col>
-
-          <!-- Coluna 2: Links úteis -->
-          <v-col cols="12" md="4">
-            <h4 class="text-h6 font-weight-bold mb-2">Links úteis</h4>
-            <v-list density="compact" nav class="bg-transparent">
-              <v-list-item title="Sobre a Plataforma" prepend-icon="mdi-information-outline" />
-              <v-list-item title="Fale Conosco" prepend-icon="mdi-email-outline" />
-              <v-list-item title="Política de Privacidade" prepend-icon="mdi-shield-lock-outline" />
-              <v-list-item title="Termos de Uso" prepend-icon="mdi-file-document-outline" />
-            </v-list>
-          </v-col>
-
-          <!-- Coluna 3: Redes sociais -->
-          <v-col cols="12" md="4">
-            <h4 class="text-h6 font-weight-bold mb-2">Siga-nos</h4>
-            <div class="d-flex ga-4">
-              <v-btn icon size="small" variant="text" color="white">
-                <v-icon size="24">mdi-facebook</v-icon>
-              </v-btn>
-              <v-btn icon size="small" variant="text" color="white">
-                <v-icon size="24">mdi-instagram</v-icon>
-              </v-btn>
-              <v-btn icon size="small" variant="text" color="white">
-                <v-icon size="24">mdi-youtube</v-icon>
-              </v-btn>
-              <v-btn icon size="small" variant="text" color="white">
-                <v-icon size="24">mdi-whatsapp</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-
-        <v-divider class="my-4" color="white" />
+        <!-- Paróquia: nome, diocese e redes sociais centralizados -->
+        <template v-if="authStore.parish?.name">
+          <v-row justify="center" class="pb-2">
+            <v-col cols="12" class="text-center">
+              <p class="text-h6 font-weight-bold mb-0">{{ authStore.parish.name }}</p>
+              <p v-if="authStore.parish?.diocese_name" class="text-caption text-blue-grey-lighten-3 mt-1">
+                {{ authStore.parish.diocese_name }}
+              </p>
+              <div v-if="hasSocial" class="d-flex justify-center ga-1 mt-3">
+                <v-btn
+                  v-if="authStore.parish?.facebook_url"
+                  icon size="small" variant="text" color="white"
+                  :href="authStore.parish.facebook_url" target="_blank"
+                >
+                  <v-icon size="20">mdi-facebook</v-icon>
+                </v-btn>
+                <v-btn
+                  v-if="authStore.parish?.instagram_url"
+                  icon size="small" variant="text" color="white"
+                  :href="authStore.parish.instagram_url" target="_blank"
+                >
+                  <v-icon size="20">mdi-instagram</v-icon>
+                </v-btn>
+                <v-btn
+                  v-if="authStore.parish?.youtube_url"
+                  icon size="small" variant="text" color="white"
+                  :href="authStore.parish.youtube_url" target="_blank"
+                >
+                  <v-icon size="20">mdi-youtube</v-icon>
+                </v-btn>
+                <v-btn
+                  v-if="authStore.parish?.whatsapp"
+                  icon size="small" variant="text" color="white"
+                  :href="`https://wa.me/${authStore.parish.whatsapp.replace(/\D/g,'')}`" target="_blank"
+                >
+                  <v-icon size="20">mdi-whatsapp</v-icon>
+                </v-btn>
+              </div>
+            </v-col>
+          </v-row>
+          <v-divider class="mb-3 mt-2" color="rgba(255,255,255,0.15)" />
+        </template>
 
         <!-- Copyright -->
-        <v-row justify="center" class="pb-2">
-          <v-col cols="12" class="text-center text-caption text-white">
+        <v-row justify="center" :class="authStore.parish?.name ? 'pb-3' : 'py-4'">
+          <v-col cols="12" class="text-center text-caption text-blue-grey-lighten-2">
             © {{ new Date().getFullYear() }} Laudato System — Todos os direitos reservados.
           </v-col>
         </v-row>
@@ -127,20 +122,10 @@
 <script setup>
   import { useAuthStore } from '~/stores/useAuthStore.js';
   const authStore = useAuthStore();
-  const drawer = ref(true);
-  const rail = ref(true);
 
-  const icons = [
-    'mdi-facebook',
-    'mdi-twitter',
-    'mdi-linkedin',
-    'mdi-instagram',
-  ];
-
-  onMounted(() => {
-    if (window.innerWidth < 960) {
-      drawer.value = false;
-    }
+  const hasSocial = computed(() => {
+    const p = authStore.parish;
+    return !!(p?.facebook_url || p?.instagram_url || p?.youtube_url || p?.whatsapp);
   });
 </script>
 
@@ -155,5 +140,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.footer-compact {
+  min-height: unset;
 }
 </style>

@@ -8,6 +8,7 @@ from uuid import UUID
 class ParishCreate(BaseModel):
     name: str
     slug: str
+    diocese_id: Optional[int] = None
     address: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
@@ -17,9 +18,15 @@ class ParishRead(BaseModel):
     id: UUID
     name: str
     slug: str
+    diocese_id: Optional[int] = None
+    diocese_name: Optional[str] = None
     address: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
+    facebook_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    whatsapp: Optional[str] = None
     plan: str
     is_active: bool
     created_at: datetime
@@ -29,9 +36,14 @@ class ParishRead(BaseModel):
 
 class ParishUpdate(BaseModel):
     name: Optional[str] = None
+    diocese_id: Optional[int] = None
     address: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
+    facebook_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    whatsapp: Optional[str] = None
 
 
 class ParishRegister(BaseModel):

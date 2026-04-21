@@ -10,6 +10,12 @@ export const useAuthStore = defineStore("auth", {
 
   getters: {
     parishSlug: (state) => state.parish?.slug ?? null,
+    isAdmin:    (state) => state.user?.scopes?.includes('admin') ?? false,
+    isMinister: (state) => state.user?.scopes?.includes('minister') ?? false,
+    canManage:  (state) => {
+      const s = state.user?.scopes ?? [];
+      return s.includes('admin') || s.includes('minister');
+    },
   },
 
   actions: {
@@ -75,6 +81,32 @@ export const useAuthStore = defineStore("auth", {
       } catch (err) {
         console.error("Erro ao buscar paróquia:", err);
       }
+    },
+
+    async updateMe(payload) {
+      const { data, error } = await asyncUseApi("/auth/me", {
+        method: "PATCH",
+        body: payload,
+      });
+      if (error.value) throw error.value;
+      if (data.value) this.user = data.value;
+      return data.value;
+    },
+
+    async switchParish(parishSlug) {
+      const { data, error } = await asyncUseApi(`/auth/switch-parish?parish_slug=${parishSlug}`, {
+        method: "POST",
+      });
+      if (error.value) throw error.value;
+      if (data.value) {
+        this.parish = {
+          id: data.value.parish_id,
+          slug: data.value.parish_slug,
+          name: data.value.parish_name,
+        };
+        await this.fetchParish();
+      }
+      return data.value;
     },
 
     async logout() {

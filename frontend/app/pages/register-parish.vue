@@ -5,6 +5,10 @@
       <!-- Coluna esquerda: branding -->
       <div class="brand-panel hidden-sm-and-down">
         <div class="brand-content">
+          <nuxt-link to="/" class="back-link mb-8 d-inline-flex align-center">
+            <v-icon size="16" class="mr-1">mdi-arrow-left</v-icon>
+            <span class="text-caption">Voltar ao início</span>
+          </nuxt-link>
           <v-img src="/laudato.png" height="72" width="72" class="mb-6" />
           <h1 class="text-h4 font-weight-bold text-white mb-3">Laudato System</h1>
           <p class="text-body-1 text-white opacity-80 mb-8">
@@ -22,6 +26,12 @@
       <!-- Coluna direita: formulário -->
       <div class="form-panel">
         <div class="form-inner">
+
+          <!-- Voltar (mobile e desktop no painel direito) -->
+          <nuxt-link to="/" class="back-link-form d-inline-flex align-center mb-6">
+            <v-icon size="16" class="mr-1">mdi-arrow-left</v-icon>
+            <span class="text-caption">Voltar ao início</span>
+          </nuxt-link>
 
           <!-- Logo mobile -->
           <div class="d-sm-none text-center mb-6">
@@ -54,6 +64,21 @@
           <!-- PASSO 1: Dados da Paróquia -->
           <Transition name="slide-fade" mode="out-in">
             <div v-if="step === 1" key="step1">
+              <v-autocomplete
+                v-model="form.parish.diocese_id"
+                :items="dioceses"
+                item-title="label"
+                item-value="id"
+                label="Diocese"
+                prepend-inner-icon="mdi-map-marker-radius-outline"
+                variant="outlined"
+                density="comfortable"
+                :rules="[required]"
+                :loading="loadingDioceses"
+                no-data-text="Nenhuma diocese encontrada"
+                class="mb-3"
+              />
+
               <v-text-field
                 v-model="form.parish.name"
                 label="Nome da Paróquia"
@@ -64,23 +89,6 @@
                 class="mb-3"
               />
 
-              <v-text-field
-                v-model="form.parish.slug"
-                label="Identificador único (slug)"
-                prepend-inner-icon="mdi-link"
-                variant="outlined"
-                density="comfortable"
-                hint="Usado na URL — ex: sao-pedro-paulo"
-                persistent-hint
-                :rules="[required, slugRule]"
-                class="mb-3"
-                @input="formatSlug"
-              >
-                <template #prepend-inner>
-                  <v-icon size="18" class="mr-1">mdi-link</v-icon>
-                  <span class="text-caption text-medium-emphasis mr-1">laudato.app/</span>
-                </template>
-              </v-text-field>
 
               <v-row>
                 <v-col cols="12" sm="6" class="pb-0 pb-sm-3">
@@ -90,6 +98,7 @@
                     prepend-inner-icon="mdi-email-outline"
                     variant="outlined"
                     density="comfortable"
+                    :rules="[v => !v || emailRule(v)]"
                     class="mb-3"
                   />
                 </v-col>
@@ -242,8 +251,25 @@ const features = [
   { icon: 'mdi-cash-multiple', text: 'Controle financeiro e dízimos' },
 ]
 
+const dioceses = ref([])
+const loadingDioceses = ref(false)
+
+const fetchDioceses = async () => {
+  loadingDioceses.value = true
+  try {
+    const { data } = await asyncUseApi('/diocese/', { server: false })
+    dioceses.value = (data.value ?? []).map(d => ({
+      ...d,
+      label: `${d.name} — ${d.state}`,
+    }))
+  } catch (e) { console.error(e) }
+  finally { loadingDioceses.value = false }
+}
+
+onMounted(fetchDioceses)
+
 const form = ref({
-  parish: { name: '', slug: '', email: '', phone: '', address: '' },
+  parish: { name: '', slug: '', diocese_id: null, email: '', phone: '', address: '' },
   admin_full_name: '',
   admin_username: '',
   admin_email: '',
@@ -254,25 +280,34 @@ const required = v => !!v || 'Campo obrigatório'
 const emailRule = v => /.+@.+\..+/.test(v) || 'E-mail inválido'
 const slugRule = v => /^[a-z0-9-]+$/.test(v) || 'Use apenas letras minúsculas, números e hífens'
 
-const formatSlug = () => {
-  form.value.parish.slug = form.value.parish.slug
-    .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-+/g, '-')
-}
-
-// Auto-gera slug a partir do nome
-watch(() => form.value.parish.name, (val) => {
-  if (!form.value.parish.slug || form.value.parish.slug === slugify(form.value.parish.name.slice(0, -1))) {
-    form.value.parish.slug = slugify(val)
-  }
-})
+const slugEditedManually = ref(false)
 
 const slugify = (val) =>
   val.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
+
+// Auto-gera enquanto o usuário não editar manualmente
+watch(() => form.value.parish.name, (val) => {
+  if (!slugEditedManually.value) {
+    form.value.parish.slug = slugify(val)
+  }
+})
+
+// Se o usuário editar o slug diretamente, trava a auto-geração
+const onSlugInput = () => {
+  slugEditedManually.value = true
+  form.value.parish.slug = form.value.parish.slug
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+}
+
+// Permite voltar ao modo automático se o campo de slug for limpo
+watch(() => form.value.parish.slug, (val) => {
+  if (!val) slugEditedManually.value = false
+})
 
 // Barra de força da senha
 const passwordStrength = reactive([
@@ -308,20 +343,41 @@ const nextStep = () => {
 const submit = async () => {
   errorMsg.value = ''
   if (!form.value.admin_email || !form.value.admin_password || !form.value.admin_username) {
-    message.warning('Preencha todos os campos obrigatórios.')
+    errorMsg.value = 'Preencha todos os campos obrigatórios.'
     return
   }
   loading.value = true
   try {
+    // Envia objeto plano (sem Vue Proxy) com campos opcionais como null quando vazios
+    const body = {
+      parish: {
+        name:       form.value.parish.name,
+        slug:       form.value.parish.slug,
+        diocese_id: form.value.parish.diocese_id || null,
+        email:      form.value.parish.email   || null,
+        phone:      form.value.parish.phone   || null,
+        address:    form.value.parish.address || null,
+      },
+      admin_full_name: form.value.admin_full_name,
+      admin_username:  form.value.admin_username,
+      admin_email:     form.value.admin_email,
+      admin_password:  form.value.admin_password,
+    }
+
     const { data, error } = await asyncUseApi('/parish/register', {
       method: 'POST',
-      body: form.value,
+      body,
     })
     if (error.value) {
-      errorMsg.value = error.value?.data?.detail || 'Erro ao cadastrar paróquia.'
+      const detail = error.value?.data?.detail
+      if (Array.isArray(detail)) {
+        // Pydantic validation errors — pega a mensagem do primeiro erro
+        errorMsg.value = detail[0]?.msg || 'Erro de validação.'
+      } else {
+        errorMsg.value = detail || 'Erro ao cadastrar paróquia.'
+      }
       return
     }
-    message.success(`Paróquia "${data.value.parish.name}" criada! Faça login para continuar.`)
     await router.push('/login')
   } catch (e) {
     errorMsg.value = 'Erro inesperado. Tente novamente.'
@@ -348,6 +404,24 @@ const submit = async () => {
   padding: 48px 40px;
   position: relative;
   overflow: hidden;
+}
+
+.back-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-link:hover {
+  color: #fff;
+}
+
+.back-link-form {
+  color: #9e9e9e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-link-form:hover {
+  color: rgb(var(--v-theme-primary));
 }
 
 .brand-panel::before {

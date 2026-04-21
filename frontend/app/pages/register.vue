@@ -101,6 +101,7 @@
 import { ref, reactive } from 'vue';
 
 const router = useRouter();
+const route = useRoute();
 const loading = ref(false);
 const loadingParishes = ref(false);
 const errorMsg = ref('');
@@ -112,6 +113,9 @@ const fetchParishes = async () => {
   try {
     const { data } = await asyncUseApi('/parish/', { server: false });
     parishes.value = data.value ?? [];
+    // Pré-seleciona paróquia se vier de ?parish=slug (ex: botão "Quero participar")
+    const preselect = route.query.parish;
+    if (preselect) newUser.value.parish_slug = preselect;
   } catch (e) {
     console.error('Erro ao carregar paróquias:', e);
   } finally {

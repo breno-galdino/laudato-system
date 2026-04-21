@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 from .api.graphql import graphql
-from .api.routes import auth, category, warning, celebration, parish, sacrament
+from .api.routes import auth, category, warning, celebration, parish, sacrament, diocese, community
 
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 
@@ -23,12 +23,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(diocese.router)
 app.include_router(parish.router)
 app.include_router(auth.router)
 app.include_router(category.router)
 app.include_router(warning.router)
 app.include_router(celebration.router)
 app.include_router(sacrament.router)
+app.include_router(community.router)
 app.include_router(graphql.router)
 
 @app.get("/")

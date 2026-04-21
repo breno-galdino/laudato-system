@@ -60,6 +60,55 @@ def _build_celebrations_full(session: Session, parish_id) -> list[CelebrationRea
     return result
 
 
+@router.get("/public", response_model=list[CelebrationReadFull])
+def get_celebrations_public(
+    parish_slug: str = Query(..., description="Slug da paróquia"),
+    session: Session = Depends(get_session),
+):
+    """Retorna celebrações futuras de uma paróquia (público)."""
+    from datetime import datetime
+    parish = session.exec(select(Parish).where(Parish.slug == parish_slug)).first()
+    if not parish:
+        raise HTTPException(status_code=404, detail="Paróquia não encontrada.")
+
+    celebrations = session.exec(
+        select(CelebrationModel)
+        .where(
+            CelebrationModel.parish_id == parish.id,
+            CelebrationModel.date >= datetime.utcnow(),
+        )
+        .order_by(CelebrationModel.date)
+    ).all()
+
+    result = []
+    for cel in celebrations:
+        rows = session.exec(
+            select(Assignment, User, Role)
+            .join(User, Assignment.user_id == User.id)
+            .join(Role, Assignment.role_id == Role.id)
+            .where(Assignment.celebration_id == cel.id)
+        ).all()
+        assignments = [
+            AssignmentDetail(
+                id=a.id,
+                user_id=a.user_id,
+                user_name=u.username,
+                role_id=a.role_id,
+                role_name=r.name,
+            )
+            for a, u, r in rows
+        ]
+        result.append(
+            CelebrationReadFull(
+                id=cel.id,
+                date=cel.date,
+                description=cel.description,
+                assignments=assignments,
+            )
+        )
+    return result
+
+
 @router.get("/", response_model=list[CelebrationReadFull])
 def get_celebrations(
     session: Session = Depends(get_session),

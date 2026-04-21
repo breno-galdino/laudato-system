@@ -1,3 +1,4 @@
+from .diocese import Diocese
 from .parish import Parish
 from .users import User, Scope, UserScope
 from .warning import Warning
@@ -6,4 +7,4 @@ from .community import Community
 from .celebration import Celebration, Role, Assignment
 from .sacrament import Sacrament
 
-__all__ = ["Parish", "User", "Scope", "UserScope", "Warning", "Category", "Community", "Celebration", "Role", "Assignment", "Sacrament"]
+__all__ = ["Diocese", "Parish", "User", "Scope", "UserScope", "Warning", "Category", "Community", "Celebration", "Role", "Assignment", "Sacrament"]

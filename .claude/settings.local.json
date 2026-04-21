@@ -4,7 +4,10 @@
       "Bash(npm show:*)",
       "Bash(python -m alembic upgrade head)",
       "Bash(python -c ':*)",
-      "Bash(python -m alembic revision --autogenerate -m \"add_sacrament_table\")"
+      "Bash(python -m alembic revision --autogenerate -m \"add_sacrament_table\")",
+      "Bash(python -m alembic revision --autogenerate -m \"add_diocese_table_and_parish_diocese_id\")",
+      "Bash(xargs grep:*)",
+      "Bash(grep -rn \"community\\\\|Community\" c:/Users/breno/OneDrive/Documentos/GitHub/laudato-system/backend/migrations/versions/*.py)"
     ]
   }
 }
