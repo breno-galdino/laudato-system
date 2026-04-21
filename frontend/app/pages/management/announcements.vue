@@ -97,17 +97,18 @@
   const fetchAnnouncements = async () => {
     loadingWarning.value = true;
     try {
-      const { data } = await asyncUseApi("/warnings/");
-      const { data: categoriesData } = await asyncUseApi("/category/");
+      const { data } = await asyncPublicApi("/warnings/");
+      const { data: categoriesData } = await asyncPublicApi("/category/");
 
-      categoriesList.value = categoriesData.value;
+      const cats = categoriesData.value ?? [];
+      categoriesList.value = cats;
 
-      categoriesData.value.forEach((item) => {
+      cats.forEach((item) => {
         categories.value[item.id] = item.icon;
         categoriesName.value[item.id] = item.name;
       });
 
-      announcements.value = data.value;
+      announcements.value = data.value ?? [];
     } catch (error) {
       console.error("Erro ao buscar anúncios:", error);
     }

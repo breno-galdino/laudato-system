@@ -24,6 +24,7 @@ class Scope(Graphemy, table=True):
 
 class User(Graphemy, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
+    parish_id: Optional[UUID] = Field(default=None, foreign_key="parish.id", index=True)
     full_name: Optional[str] = Field(default=None, max_length=100)
     email: str = Field(max_length=150, unique=True)
     username: str = Field(max_length=50, unique=True)

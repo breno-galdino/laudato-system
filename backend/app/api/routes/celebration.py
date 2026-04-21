@@ -17,14 +17,20 @@ from ...schemas.celebration import (
     RoleRead,
 )
 from ...services.user import get_current_user
+from fastapi import Query
+from ...models.parish import Parish
 
 router = APIRouter(prefix="/celebration", tags=["celebration"])
 
-_cache_key = "celebration:all"
+
+def _cache_key(parish_id) -> str:
+    return f"celebration:{parish_id}"
 
 
-def _build_celebrations_full(session: Session) -> list[CelebrationReadFull]:
-    celebrations = session.exec(select(CelebrationModel)).all()
+def _build_celebrations_full(session: Session, parish_id) -> list[CelebrationReadFull]:
+    celebrations = session.exec(
+        select(CelebrationModel).where(CelebrationModel.parish_id == parish_id)
+    ).all()
     result = []
     for cel in celebrations:
         rows = session.exec(
@@ -55,20 +61,29 @@ def _build_celebrations_full(session: Session) -> list[CelebrationReadFull]:
 
 
 @router.get("/", response_model=list[CelebrationReadFull])
-def get_celebrations(session: Session = Depends(get_session)):
-    cached_data = redis_client.get(_cache_key)
+def get_celebrations(
+    session: Session = Depends(get_session),
+    current_user: User = Security(get_current_user, scopes=["me"]),
+):
+    key = _cache_key(current_user.parish_id)
+    cached_data = redis_client.get(key)
     if cached_data:
         return json.loads(cached_data)
 
-    result = _build_celebrations_full(session)
+    result = _build_celebrations_full(session, current_user.parish_id)
     serialized = jsonable_encoder(result)
-    redis_client.setex(_cache_key, 600, json.dumps(serialized))
+    redis_client.setex(key, 600, json.dumps(serialized))
     return result
 
 
 @router.get("/roles/", response_model=list[RoleRead])
-def get_roles(session: Session = Depends(get_session)):
-    return session.exec(select(Role)).all()
+def get_roles(
+    session: Session = Depends(get_session),
+    current_user: User = Security(get_current_user, scopes=["me"]),
+):
+    return session.exec(
+        select(Role).where(Role.parish_id == current_user.parish_id)
+    ).all()
 
 
 @router.post("/", response_model=CelebrationRead, status_code=201)
@@ -77,11 +92,11 @@ def create_celebration(
     session: Session = Depends(get_session),
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
-    db_celebration = CelebrationModel(**celebration.model_dump())
+    db_celebration = CelebrationModel(**celebration.model_dump(), parish_id=current_user.parish_id)
     session.add(db_celebration)
     session.commit()
     session.refresh(db_celebration)
-    redis_client.delete(_cache_key)
+    redis_client.delete(_cache_key(current_user.parish_id))
     return db_celebration
 
 
@@ -130,7 +145,7 @@ def create_assignments(
             )
         )
 
-    redis_client.delete(_cache_key)
+    redis_client.delete(_cache_key(current_user.parish_id))
     return result
 
 
@@ -145,7 +160,7 @@ def delete_assignment(
         raise HTTPException(status_code=404, detail="Assignment not found")
     session.delete(assignment)
     session.commit()
-    redis_client.delete(_cache_key)
+    redis_client.delete(_cache_key(current_user.parish_id))
 
 
 @router.put("/{celebration_id}", response_model=CelebrationRead)
@@ -156,7 +171,7 @@ def update_celebration(
     current_user: User = Security(get_current_user, scopes=["admin"]),
 ):
     db_celebration = session.get(CelebrationModel, celebration_id)
-    if not db_celebration:
+    if not db_celebration or db_celebration.parish_id != current_user.parish_id:
         raise HTTPException(status_code=404, detail="Celebration not found")
 
     for key, value in celebration.model_dump(exclude_unset=True).items():
@@ -165,7 +180,7 @@ def update_celebration(
     session.add(db_celebration)
     session.commit()
     session.refresh(db_celebration)
-    redis_client.delete(_cache_key)
+    redis_client.delete(_cache_key(current_user.parish_id))
     return db_celebration
 
 
@@ -181,4 +196,4 @@ def delete_celebration(
 
     session.delete(db_celebration)
     session.commit()
-    redis_client.delete(_cache_key)
+    redis_client.delete(_cache_key(current_user.parish_id))

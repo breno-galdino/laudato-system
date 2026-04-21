@@ -7,12 +7,16 @@ ENV NODE_ENV=development
 
 WORKDIR /app
 
-# Copia os arquivos de dependência e instala
+# Copia manifests e instala sem rodar postinstall (nuxt prepare
+# falha aqui pois o nuxt.config.ts ainda não foi copiado)
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 
-# Copia o restante do projeto
+# Copia o projeto completo
 COPY . .
+
+# Agora o nuxt.config.ts existe — pode preparar os tipos
+RUN npm run postinstall
 
 EXPOSE 3000
 

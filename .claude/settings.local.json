@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm show:*)"
+      "Bash(npm show:*)",
+      "Bash(python -m alembic upgrade head)",
+      "Bash(python -c ':*)",
+      "Bash(python -m alembic revision --autogenerate -m \"add_sacrament_table\")"
     ]
   }
 }

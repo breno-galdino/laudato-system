@@ -33,6 +33,11 @@
                         <span>Não tem uma conta?</span>
                         <router-link to="/register" class="ml-1 text-primary font-weight-bold">Registre-se</router-link>
                       </div>
+                      <v-divider class="my-4" />
+                      <div class="text-center text-body-2">
+                        <span class="text-grey">É uma paróquia?</span>
+                        <router-link to="/register-parish" class="ml-1 text-primary font-weight-bold">Cadastre sua paróquia</router-link>
+                      </div>
                     </v-form>
                   </v-col>
                 </v-row>

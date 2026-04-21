@@ -6,7 +6,12 @@
         Painel de Gerenciamento
       </h1>
       <p class="text-body-1 text-medium-emphasis">
-        Escolha uma área para administrar
+        <template v-if="authStore.parish?.name">
+          {{ authStore.parish.name }}
+        </template>
+        <template v-else>
+          Escolha uma área para administrar
+        </template>
       </p>
     </div>
 
@@ -50,6 +55,9 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '~/stores/useAuthStore.js';
+const authStore = useAuthStore();
+
 const managementItems = ref([
   {
     title: 'Anúncios',
@@ -78,6 +86,13 @@ const managementItems = ref([
     icon: 'mdi:mdi-book-open-page-variant',
     to: '/management/devotional',
     color: 'orange-darken-2'
+  },
+  {
+    title: 'Sacramentos',
+    description: 'Registre e consulte batismos, crismas, matrimônios e demais sacramentos.',
+    icon: 'mdi:mdi-church',
+    to: '/management/sacraments',
+    color: 'teal-darken-2'
   },
   {
     title: 'Usuários',

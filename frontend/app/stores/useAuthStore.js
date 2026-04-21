@@ -3,9 +3,14 @@ import { defineStore } from "pinia";
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
+    parish: null,
     loading: false,
-    isAuthenticated: false
+    isAuthenticated: false,
   }),
+
+  getters: {
+    parishSlug: (state) => state.parish?.slug ?? null,
+  },
 
   actions: {
     async checkLogin() {
@@ -13,8 +18,9 @@ export const useAuthStore = defineStore("auth", {
         await this.fetchUser();
       } catch (err) {
         console.error("Erro ao verificar login:", err);
-      } 
+      }
     },
+
     async login(username, password) {
       const formData = new URLSearchParams();
       formData.append("username", username);
@@ -24,13 +30,19 @@ export const useAuthStore = defineStore("auth", {
       try {
         const { data } = await asyncUseApi("/auth/login", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData,
         });
-        await this.fetchUser();
 
+        if (data.value) {
+          this.parish = {
+            id: data.value.parish_id,
+            slug: data.value.parish_slug,
+            name: data.value.parish_name,
+          };
+        }
+
+        await this.fetchUser();
       } catch (err) {
         console.error("Erro ao fazer login:", err);
         throw err;
@@ -41,17 +53,27 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchUser() {
       try {
-        const { data } = await asyncUseApi("/auth/me", {
-          onResponse({ request, response, options }) {
-            // Handle response if needed
-          },
-        });
+        const { data } = await asyncUseApi("/auth/me");
         this.user = data.value || null;
         this.isAuthenticated = !!this.user;
+
+        if (this.user && !this.parish) {
+          await this.fetchParish();
+        }
       } catch (err) {
-        console.error("Erro ao buscar usuário:", err);
         this.user = null;
-        this.isAuthenticated = !!this.user;
+        this.isAuthenticated = false;
+      }
+    },
+
+    async fetchParish() {
+      try {
+        const { data } = await asyncUseApi("/parish/me");
+        if (data.value) {
+          this.parish = data.value;
+        }
+      } catch (err) {
+        console.error("Erro ao buscar paróquia:", err);
       }
     },
 
@@ -62,6 +84,7 @@ export const useAuthStore = defineStore("auth", {
         console.error("Erro ao fazer logout:", err);
       }
       this.user = null;
+      this.parish = null;
       this.isAuthenticated = false;
     },
   },

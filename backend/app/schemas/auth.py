@@ -12,6 +12,7 @@ class UserCreate(UserBase):
     email: EmailStr
     password: str
     username: str
+    parish_slug: str
 
 class UserResponse(UserBase):
     id: UUID
@@ -36,4 +37,12 @@ class Token(BaseModel):
     
 class TokenData(BaseModel):
     id: UUID | None = None
+    parish_id: UUID | None = None
     scopes: list[str] = []
+
+
+class LoginResponse(BaseModel):
+    message: str
+    parish_id: UUID
+    parish_slug: str
+    parish_name: str

@@ -4,12 +4,14 @@ from uuid import UUID
 
 class Celebration(Graphemy, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    parish_id: UUID | None = Field(default=None, foreign_key="parish.id", index=True)
     date: datetime
     description: str | None = None
 
 
 class Role(Graphemy, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    parish_id: UUID | None = Field(default=None, foreign_key="parish.id", index=True)
     name: str
 
 class Assignment(Graphemy, table=True):

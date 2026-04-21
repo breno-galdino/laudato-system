@@ -27,7 +27,9 @@
 
     <v-app-bar elevation="0" color="primary">
       <v-app-bar-nav-icon @click="drawer = !drawer" class="d-md-none"></v-app-bar-nav-icon>
-      <v-toolbar-title><v-img src="/laudato.png" height="64px" width="64px"></v-img></v-toolbar-title>
+      <v-toolbar-title>
+        <v-img src="/laudato.png" height="48px" width="48px"></v-img>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn size="small" class="text-none" to="/" exact>Início</v-btn>
       <v-btn size="small" to="/community" class="text-none">Comunidade</v-btn>
@@ -37,8 +39,20 @@
         <v-btn size="small" to="/login" color="accent" class="text-none" rounded>Entrar</v-btn>
         <v-btn size="small" to="/register" color="accent" class="text-none" rounded>Cadastre-se</v-btn>
       </div>
-      <div v-else class="mr-4">
-        <v-btn class="text-none" to="/profile" prepend-icon="mdi-account-circle">{{ authStore.user.username }}</v-btn>
+      <div v-else class="d-flex align-center ga-2 mr-3">
+        <v-chip
+          v-if="authStore.parish?.name"
+          prepend-icon="mdi-church"
+          variant="tonal"
+          color="white"
+          size="small"
+          class="hidden-sm-and-down parish-chip"
+        >
+          {{ authStore.parish.name }}
+        </v-chip>
+        <v-btn class="text-none" to="/profile" prepend-icon="mdi-account-circle" size="small">
+          {{ authStore.user.username }}
+        </v-btn>
       </div>
     </v-app-bar>
 
@@ -51,19 +65,17 @@
         <v-row class="px-2" justify="space-between" align="start">
           <!-- Coluna 1: Informações da Paróquia -->
           <v-col cols="12" md="4">
-            <h4 class="text-h6 font-weight-bold mb-2">Paróquia São Pedro e São Paulo</h4>
-            <p class="text-body-2">
-              Av. Dom Pedro de Alcântara 225<br>
-              São Bernardo do Campo, SP<br>
-              CEP: 09784-000
+            <h4 class="text-h6 font-weight-bold mb-2">{{ authStore.parish?.name || 'Laudato System' }}</h4>
+            <p v-if="authStore.parish?.address" class="text-body-2">
+              {{ authStore.parish.address }}
             </p>
-            <p class="text-body-2 mt-2">
+            <p v-if="authStore.parish?.email" class="text-body-2 mt-2">
               <v-icon start size="small">mdi-email</v-icon>
-              paroquiasaopedroepaulo@gmail.com
+              {{ authStore.parish.email }}
             </p>
-            <p class="text-body-2">
+            <p v-if="authStore.parish?.phone" class="text-body-2">
               <v-icon start size="small">mdi-phone</v-icon>
-              (11) 93716-2091
+              {{ authStore.parish.phone }}
             </p>
           </v-col>
 
@@ -82,16 +94,16 @@
           <v-col cols="12" md="4">
             <h4 class="text-h6 font-weight-bold mb-2">Siga-nos</h4>
             <div class="d-flex ga-4">
-              <v-btn icon size="small" variant="text" href="https://www.facebook.com/saopedroepaulo/" color="white" target="_blank">
+              <v-btn icon size="small" variant="text" color="white">
                 <v-icon size="24">mdi-facebook</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" href="https://www.instagram.com/saopedroepaulo" color="white" target="_blank">
+              <v-btn icon size="small" variant="text" color="white">
                 <v-icon size="24">mdi-instagram</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" href="https://www.youtube.com/channel/UCYZVXTFEfNsPWQVLJLtw3dg" color="white" target="_blank">
+              <v-btn icon size="small" variant="text" color="white">
                 <v-icon size="24">mdi-youtube</v-icon>
               </v-btn>
-              <v-btn icon size="small" variant="text" color="white" target="_blank">
+              <v-btn icon size="small" variant="text" color="white">
                 <v-icon size="24">mdi-whatsapp</v-icon>
               </v-btn>
             </div>
@@ -131,3 +143,17 @@
     }
   });
 </script>
+
+<style scoped>
+.parish-chip {
+  opacity: 0.85;
+  border: 1px solid rgba(255,255,255,0.3);
+  max-width: 220px;
+}
+
+.parish-chip :deep(.v-chip__content) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

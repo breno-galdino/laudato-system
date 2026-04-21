@@ -175,15 +175,19 @@
   const notices = ref([]);
 
   const fetchAnnouncements = async () => {
+    if (!authStore.parishSlug) return;
     try {
-      const { data: warnings } = await asyncUseApi("/warnings/");
-      const { data: categoriesData } = await asyncUseApi("/category/");
+      const { data: warnings } = await asyncPublicApi("/warnings/");
+      const { data: categoriesData } = await asyncPublicApi("/category/");
 
-      categoriesData.value.forEach((item) => {
+      const cats = categoriesData.value ?? [];
+      const warns = warnings.value ?? [];
+
+      cats.forEach((item) => {
         categories.value[item.id] = item.icon;
       });
 
-      notices.value = warnings.value.map((notice) => ({
+      notices.value = warns.map((notice) => ({
         ...notice,
         date: new Date(notice.event_date).toLocaleDateString("pt-BR", {
           day: "2-digit",
@@ -191,9 +195,8 @@
           year: "numeric",
         }),
         icon: categories.value[notice.category_id] || 'mdi-bell-outline',
-        color: categoriesData.value.find(cat => cat.id === notice.category_id)?.color || 'secondary'
+        color: cats.find(cat => cat.id === notice.category_id)?.color || 'secondary',
       }));
-
     } catch (error) {
       console.error("Erro ao buscar anúncios:", error);
     }

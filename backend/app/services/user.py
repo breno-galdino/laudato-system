@@ -51,7 +51,11 @@ async def get_current_user(
         if user_id is None:
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes)
+        token_data = TokenData(
+            id=user_id,
+            parish_id=payload.get("parish_id"),
+            scopes=token_scopes,
+        )
     except (JWTError, ValidationError):
         raise credentials_exception
     
