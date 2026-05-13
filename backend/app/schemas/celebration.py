@@ -7,17 +7,20 @@ from uuid import UUID
 class CelebrationCreate(BaseModel):
     date: datetime
     description: Optional[str] = None
+    community_id: Optional[int] = None
 
 
 class CelebrationRead(BaseModel):
     id: int
     date: datetime
     description: Optional[str] = None
+    community_id: Optional[int] = None
 
 
 class CelebrationUpdate(BaseModel):
     date: Optional[datetime] = None
     description: Optional[str] = None
+    community_id: Optional[int] = None
 
 
 class RoleRead(BaseModel):
@@ -63,4 +66,5 @@ class CelebrationReadFull(BaseModel):
     id: int
     date: datetime
     description: Optional[str] = None
+    community_id: Optional[int] = None
     assignments: list[AssignmentDetail] = []

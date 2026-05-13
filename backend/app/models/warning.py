@@ -11,3 +11,4 @@ class Warning(SQLModel, table=True):
     event_date: datetime
     content: str = Field(max_length=500)
     category_id: int
+    community_id: Optional[int] = Field(default=None, foreign_key="community.id", index=True)

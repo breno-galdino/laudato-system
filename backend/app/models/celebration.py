@@ -7,6 +7,7 @@ class Celebration(Graphemy, table=True):
     parish_id: UUID | None = Field(default=None, foreign_key="parish.id", index=True)
     date: datetime
     description: str | None = None
+    community_id: int | None = Field(default=None, foreign_key="community.id", index=True)
 
 
 class Role(Graphemy, table=True):

@@ -172,8 +172,13 @@
                     </v-avatar>
                   </template>
                   <v-card-title class="text-body-1 font-weight-bold">{{ n.title }}</v-card-title>
-                  <v-card-subtitle v-if="n.event_date" class="text-caption">
-                    {{ formatDate(n.event_date) }}
+                  <v-card-subtitle class="d-flex flex-wrap align-center ga-1 mt-1">
+                    <v-chip v-if="n.community_name" size="x-small" color="secondary" variant="tonal" prepend-icon="mdi-map-marker-outline">
+                      {{ n.community_name }}
+                    </v-chip>
+                    <span v-if="n.event_date" class="text-caption text-grey-darken-1">
+                      {{ formatDate(n.event_date) }}
+                    </span>
                   </v-card-subtitle>
                 </v-card-item>
                 <v-card-text class="text-body-2 pt-0">{{ n.content }}</v-card-text>
@@ -348,15 +353,18 @@ const loadDashboard = async (slug) => {
 const loadNotices = async (slug) => {
   loadingNotices.value = true;
   try {
-    const [{ data: wData }, { data: cData }] = await Promise.all([
+    const [{ data: wData }, { data: cData }, { data: commData }] = await Promise.all([
       asyncUseApi(`/warnings/?parish_slug=${slug}`, { server: false }),
       asyncUseApi(`/category/?parish_slug=${slug}`, { server: false }),
+      asyncUseApi(`/community/?type=comunidade`, { server: false }),
     ]);
-    const catMap = Object.fromEntries((cData.value ?? []).map(c => [c.id, c]));
+    const catMap  = Object.fromEntries((cData.value ?? []).map(c => [c.id, c]));
+    const commMap = Object.fromEntries((commData.value ?? []).map(c => [c.id, c.name]));
     notices.value = (wData.value ?? []).map(w => ({
       ...w,
-      icon:  catMap[w.category_id]?.icon  || 'mdi-bell-outline',
-      color: catMap[w.category_id]?.color || 'primary',
+      icon:           catMap[w.category_id]?.icon  || 'mdi-bell-outline',
+      color:          catMap[w.category_id]?.color || 'primary',
+      community_name: w.community_id ? (commMap[w.community_id] ?? null) : null,
     }));
   } catch (e) { console.error(e); }
   finally { loadingNotices.value = false; }

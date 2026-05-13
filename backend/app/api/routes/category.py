@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Security, Query
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 import json
 
 from ...database import get_session
@@ -32,7 +32,9 @@ def get_categories(
         return json.loads(cached)
 
     categories = session.exec(
-        select(CategoryModel).where(CategoryModel.parish_id == parish.id)
+        select(CategoryModel).where(
+            or_(CategoryModel.parish_id == parish.id, CategoryModel.parish_id.is_(None))
+        )
     ).all()
 
     redis_client.setex(key, 600, json.dumps([c.model_dump() for c in categories], default=str))
